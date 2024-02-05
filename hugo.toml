@@ -59,18 +59,19 @@ errorColor = "#CD5C5C"
 
 # You can add your own taxonomies
 [taxonomies]
-tag = "tags"
 category = "categories"
+tag = "tags"
+
 
 [params.taxonomy]
 # set taxonomyCloud = [] to hide taxonomy clouds
 taxonomyCloud = ["tags", "categories"]
 
 # If used, must have same length as taxonomyCloud
-taxonomyCloudTitle = ["Tag", "Categories"]
+# taxonomyCloudTitle = ["Tag", "Categories"]
 
 # set taxonomyPageHeader = [] to hide taxonomies on the page headers
-taxonomyPageHeader = ["tags", "categories"]
+# taxonomyPageHeader = ["tags", "categories"]
 
 
 # Highlighting config

@@ -1,7 +1,7 @@
 ---
 title: ⑩画像を生成する
 categories: [業務利活用]
-tags: [Few-shot, sample, docs]
+tags: [Image]
 weight: 10
 ---
 

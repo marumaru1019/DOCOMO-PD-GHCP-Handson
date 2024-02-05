@@ -1,7 +1,7 @@
 ---
 title: ⑦ 思考の順序を指示する
 categories: [業務利活用,ソフトウエアエンジニア向け]
-tags: [Few-shot, sample, docs]
+tags: [Chain-of-Thought]
 weight: 7
 ---
 

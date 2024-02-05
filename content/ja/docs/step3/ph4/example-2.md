@@ -1,7 +1,7 @@
 ---
-title: 設計資料の作成補助
+title: 2. 設計資料の作成補助
 categories: [ソフトウエアエンジニア向け]
-tags: [Few-shot, sample, docs]
+tags: [Markdown, Docs]
 weight: 2
 ---
 ### 🚗設計資料の作成補助

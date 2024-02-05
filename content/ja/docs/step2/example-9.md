@@ -1,7 +1,7 @@
 ---
 title: ⑨画像からインサイトを得る
 categories: [業務利活用]
-tags: [Few-shot, sample, docs]
+tags: [Image]
 weight: 9
 ---
 

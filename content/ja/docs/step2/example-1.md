@@ -1,7 +1,7 @@
 ---
 title: ①メールを作成する
 categories: [業務利活用]
-tags: [Few-shot, sample, docs]
+tags: [Mail,Translation]
 weight: 1
 ---
 

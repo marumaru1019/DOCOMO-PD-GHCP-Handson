@@ -2,7 +2,6 @@
 title: ③プログラム設計開発
 description: Honda様向けプロンプトエンジニアリングワークショップ資料
 categories: [ソフトウエアエンジニア向け]
-tags: [test, docs]
 weight: 4
 ---
 

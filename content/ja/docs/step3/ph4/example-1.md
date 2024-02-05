@@ -1,7 +1,7 @@
 ---
-title: シーケンス図の作成とインサイト
+title: 1. シーケンス図の作成とインサイト
 categories: [ソフトウエアエンジニア向け]
-tags: [Few-shot, sample, docs]
+tags: [Diagram, Marmaid]
 weight: 1
 ---
 

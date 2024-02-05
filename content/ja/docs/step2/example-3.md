@@ -1,7 +1,7 @@
 ---
 title: ③文章を推敲する
 categories: [業務利活用]
-tags: [Few-shot, sample, docs]
+tags: [Refine]
 weight: 3
 ---
 

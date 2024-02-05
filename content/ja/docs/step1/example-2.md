@@ -1,7 +1,7 @@
 ---
 title: ②出力形式を指定する
 categories: [業務利活用,ソフトウエアエンジニア向け]
-tags: [test, sample, docs]
+tags: [json, csv, Format]
 weight: 2
 ---
 

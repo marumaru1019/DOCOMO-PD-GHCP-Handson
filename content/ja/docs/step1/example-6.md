@@ -1,7 +1,7 @@
 ---
 title: ⑥ 段階的に指示を与える
 categories: [業務利活用,ソフトウエアエンジニア向け]
-tags: [Few-shot, sample, docs]
+tags: [Chain-of-Thought]
 weight: 6
 ---
 

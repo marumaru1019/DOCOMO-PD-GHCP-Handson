@@ -1,7 +1,7 @@
 ---
-title: 論文の作成補助
+title: 3. 論文の作成補助
 categories: [ソフトウエアエンジニア向け]
-tags: [Few-shot, sample, docs]
+tags: [LaTex, Docs]
 math: true
 weight: 3
 ---

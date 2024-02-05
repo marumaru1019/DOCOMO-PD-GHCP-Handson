@@ -1,7 +1,7 @@
 ---
 title: ④文章の言い回しを変更する
 categories: [業務利活用]
-tags: [Few-shot, sample, docs]
+tags: [Format]
 weight: 4
 ---
 

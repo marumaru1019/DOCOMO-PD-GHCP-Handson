@@ -1,7 +1,7 @@
 ---
-title: REST APIの開発
+title: 2. REST APIの開発
 categories: [ソフトウエアエンジニア向け]
-tags: [Few-shot, sample, docs]
+tags: [REST, API, Java, Python, Test, Swagger]
 weight: 2
 ---
 
@@ -506,7 +506,7 @@ components:
           format: date-time
 ```
 
-![](images/swagger.png)
+![](../images/swagger.png)
 
 ### :memo: 5. 単体テストケース作成
 ```text

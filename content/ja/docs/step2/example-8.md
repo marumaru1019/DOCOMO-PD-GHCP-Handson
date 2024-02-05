@@ -1,7 +1,7 @@
 ---
 title: ⑧ブレストをする
 categories: [業務利活用]
-tags: [Few-shot, sample, docs]
+tags: [Discussion]
 weight: 8
 ---
 

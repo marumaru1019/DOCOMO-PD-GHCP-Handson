@@ -1,7 +1,7 @@
 ---
-title: GPT を使ったコードレビューの自動化の事例紹介
+title: 5. GPT を使ったコードレビューの自動化の事例紹介
 categories: [ソフトウエアエンジニア向け]
-tags: [demo]
+tags: [Demo]
 weight: 5
 ---
 

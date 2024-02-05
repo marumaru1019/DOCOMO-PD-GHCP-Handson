@@ -1,6 +1,5 @@
 ---
-title: さらなる活用のための応用テクニック
-description: HONDA様向けプロンプトエンジニアリングワークショップ資料
+title: ソフトウエアエンジニア編
 categories: [ソフトウエアエンジニア向け]
 weight: 4
 ---

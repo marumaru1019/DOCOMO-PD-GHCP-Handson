@@ -1,8 +1,6 @@
 ---
-title: 日常業務で使えるテクニック
-description: Honda様向けプロンプトエンジニアリングワークショップ資料
+title: 業務利活用編
 categories: [業務利活用]
-tags: [test, docs]
 weight: 3
 ---
 

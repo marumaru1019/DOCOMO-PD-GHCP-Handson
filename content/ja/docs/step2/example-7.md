@@ -1,7 +1,7 @@
 ---
 title: ⑦課題点をまとめる
 categories: [業務利活用]
-tags: [Few-shot, sample, docs]
+tags: [Discussion]
 weight: 7
 ---
 

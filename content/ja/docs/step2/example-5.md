@@ -1,7 +1,7 @@
 ---
 title: ⑤用語解説をする
 categories: [業務利活用]
-tags: [Few-shot, sample, docs]
+tags: [Keyword]
 weight: 5
 ---
 

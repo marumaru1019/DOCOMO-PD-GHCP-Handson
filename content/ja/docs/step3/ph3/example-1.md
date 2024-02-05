@@ -1,7 +1,7 @@
 ---
-title: シェアリングカーの予約システム開発
+title: 1. シェアリングカーの予約システム開発
 categories: [ソフトウエアエンジニア向け]
-tags: [Few-shot, sample, docs]
+tags: [Python, React, SQL, Bicep, HTML, Database, Azure, Diagram]
 weight: 1
 ---
 

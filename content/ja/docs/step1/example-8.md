@@ -1,7 +1,7 @@
 ---
 title: ⑧ 回答を評価しながら質問を繰り返す
 categories: [業務利活用,ソフトウエアエンジニア向け]
-tags: [Few-shot, sample, docs]
+tags: [Tree-of-Thoughts]
 weight: 8
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: ⑥文章からキーワードを抽出する
 categories: [業務利活用]
-tags: [Few-shot, sample, docs]
+tags: [Keyword]
 weight: 6
 ---
 

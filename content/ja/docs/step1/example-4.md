@@ -1,7 +1,7 @@
 ---
 title: ④いくつかの例を示す
 categories: [業務利活用,ソフトウエアエンジニア向け]
-tags: [Few-shot, sample, docs]
+tags: [Few-shot]
 weight: 4
 ---
 

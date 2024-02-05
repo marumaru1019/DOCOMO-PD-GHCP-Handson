@@ -2,6 +2,7 @@
 title: ⑨ 感情を追加する
 categories: [基本テクニック]
 categories: [業務利活用,ソフトウエアエンジニア向け]
+tags: [Emotion]
 weight: 9
 ---
 

@@ -1,7 +1,7 @@
 ---
-title: Github Copilot を活用したコード作成 & テストケースの作成
+title: 4. Github Copilot を活用したコード作成 & テストケースの作成
 categories: [ソフトウエアエンジニア向け]
-tags: [Github Copilot, demo]
+tags: [Github Copilot, Demo]
 weight: 4
 ---
 

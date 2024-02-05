@@ -1,7 +1,7 @@
 ---
-title: 数値流体解析での活用
+title: 3. 数値流体解析での活用
 categories: [ソフトウエアエンジニア向け]
-tags: [Few-shot, sample, docs]
+tags: [CFD, Python, NumPy, Matplotlib]
 weight: 3
 ---
 

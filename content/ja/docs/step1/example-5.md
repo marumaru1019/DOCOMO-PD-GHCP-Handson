@@ -1,7 +1,7 @@
 ---
 title: ⑤ 条件判定を入れる
 categories: [業務利活用,ソフトウエアエンジニア向け]
-tags: [Few-shot, sample, docs]
+tags: [if-else]
 weight: 5
 ---
 

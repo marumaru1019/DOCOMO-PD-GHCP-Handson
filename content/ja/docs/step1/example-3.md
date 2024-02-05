@@ -1,7 +1,7 @@
 ---
 title: ③情報を与えずに指示をする
 categories: [業務利活用,ソフトウエアエンジニア向け]
-tags: [test, sample, docs]
+tags: [Zero-shot]
 weight: 3
 ---
 

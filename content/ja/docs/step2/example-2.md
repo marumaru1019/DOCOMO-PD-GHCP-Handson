@@ -1,7 +1,7 @@
 ---
 title: ②データフォーマットを変換する
 categories: [業務利活用]
-tags: [Few-shot, sample, docs]
+tags: [Format]
 weight: 2
 ---
 
