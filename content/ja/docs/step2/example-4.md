@@ -1,6 +1,6 @@
 ---
 title: ④文章の言い回しを変更する
-categories: [日常業務で使えるテクニック]
+categories: [業務利活用]
 tags: [Few-shot, sample, docs]
 weight: 4
 ---

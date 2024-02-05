@@ -1,6 +1,6 @@
 ---
 title: ③情報を与えずに指示をする
-categories: [Examples]
+categories: [業務利活用,ソフトウエアエンジニア向け]
 tags: [test, sample, docs]
 weight: 3
 ---

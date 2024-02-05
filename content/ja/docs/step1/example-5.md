@@ -1,6 +1,6 @@
 ---
 title: ⑤ 条件判定を入れる
-categories: [基本テクニック]
+categories: [業務利活用,ソフトウエアエンジニア向け]
 tags: [Few-shot, sample, docs]
 weight: 5
 ---

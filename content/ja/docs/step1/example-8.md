@@ -1,6 +1,6 @@
 ---
 title: ⑧ 回答を評価しながら質問を繰り返す
-categories: [基本テクニック]
+categories: [業務利活用,ソフトウエアエンジニア向け]
 tags: [Few-shot, sample, docs]
 weight: 8
 ---

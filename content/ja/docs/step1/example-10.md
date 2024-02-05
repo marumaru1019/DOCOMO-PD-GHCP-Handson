@@ -1,6 +1,6 @@
 ---
 title: ⑩ プロンプト自体を生成AIに作成させる
-categories: [基本テクニック]
+categories: [業務利活用,ソフトウエアエンジニア向け]
 tags: [Few-shot, sample, docs]
 weight: 10
 ---

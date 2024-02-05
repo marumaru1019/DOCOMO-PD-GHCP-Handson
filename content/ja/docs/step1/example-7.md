@@ -1,6 +1,6 @@
 ---
 title: ⑦ 思考の順序を指示する
-categories: [基本テクニック]
+categories: [業務利活用,ソフトウエアエンジニア向け]
 tags: [Few-shot, sample, docs]
 weight: 7
 ---

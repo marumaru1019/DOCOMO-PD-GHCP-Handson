@@ -1,7 +1,6 @@
 ---
 title: ① 区切り文字を使う
-categories: [基本テクニック]
-tags: [Few-shot, sample, docs]
+categories: [業務利活用,ソフトウエアエンジニア向け]
 weight: 1
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: ⑥ 段階的に指示を与える
-categories: [基本テクニック]
+categories: [業務利活用,ソフトウエアエンジニア向け]
 tags: [Few-shot, sample, docs]
 weight: 6
 ---

@@ -1,6 +1,6 @@
 ---
 title: ⑨画像からインサイトを得る
-categories: [日常業務で使えるテクニック]
+categories: [業務利活用]
 tags: [Few-shot, sample, docs]
 weight: 9
 ---

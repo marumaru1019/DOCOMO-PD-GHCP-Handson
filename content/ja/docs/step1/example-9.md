@@ -1,7 +1,7 @@
 ---
 title: ⑨ 感情を追加する
 categories: [基本テクニック]
-tags: [Few-shot, sample, docs]
+categories: [業務利活用,ソフトウエアエンジニア向け]
 weight: 9
 ---
 

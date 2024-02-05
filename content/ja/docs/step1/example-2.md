@@ -1,6 +1,6 @@
 ---
 title: ②出力形式を指定する
-categories: [Examples]
+categories: [業務利活用,ソフトウエアエンジニア向け]
 tags: [test, sample, docs]
 weight: 2
 ---
