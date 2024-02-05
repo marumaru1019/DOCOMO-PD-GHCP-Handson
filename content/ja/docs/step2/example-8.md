@@ -2,6 +2,7 @@
 title: ⑧ブレストをする
 categories: [日常業務で使えるテクニック]
 tags: [Few-shot, sample, docs]
+weight: 8
 ---
 
 アイデアを出し合うブレストのテクニックを学びましょう。

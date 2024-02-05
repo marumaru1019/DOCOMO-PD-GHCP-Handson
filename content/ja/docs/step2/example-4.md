@@ -2,6 +2,7 @@
 title: ④文章の言い回しを変更する
 categories: [日常業務で使えるテクニック]
 tags: [Few-shot, sample, docs]
+weight: 4
 ---
 
 文章の言い回しを変更するテクニックを学びましょう。

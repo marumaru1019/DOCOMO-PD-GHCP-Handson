@@ -2,6 +2,7 @@
 title: ⑤用語解説をする
 categories: [日常業務で使えるテクニック]
 tags: [Few-shot, sample, docs]
+weight: 5
 ---
 
 専門用語や略語を解説するテクニックを学びましょう。

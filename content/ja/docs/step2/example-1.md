@@ -2,6 +2,7 @@
 title: ①メールを作成する
 categories: [日常業務で使えるテクニック]
 tags: [Few-shot, sample, docs]
+weight: 1
 ---
 
 メールの内容を指定することで、メールを作成することができます。

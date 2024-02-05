@@ -2,6 +2,7 @@
 title: ⑥文章からキーワードを抽出する
 categories: [日常業務で使えるテクニック]
 tags: [Few-shot, sample, docs]
+weight: 6
 ---
 
 数多くの文章からキーワードを抽出するテクニックを学びましょう。
