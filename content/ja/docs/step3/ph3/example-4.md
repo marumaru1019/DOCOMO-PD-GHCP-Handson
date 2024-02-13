@@ -5,7 +5,7 @@ tags: [Github Copilot, Demo]
 weight: 4
 ---
 
-### Github Copilot　について
+## Github Copilot について
 Github Copilotは、OpenAIとGitHubが共同開発した、画期的なAIコーディングパートナーです。このツールは、開発者がコーディングしている最中にリアルタイムでコードの提案を行い、生産性を劇的に向上させることを目的としています。
 Github Copilotは、OpenAI Codexという強力なAIモデルを核としています。このモデルは、一般に公開されている大量のソースコードと自然言語テキストを元に事前に学習されており、コーディングに特化しています。
 Github Copilot を活用することで以下のようなことが可能です。
@@ -119,26 +119,13 @@ Github Copilotの効果を最大限に引き出すためには、プロンプト
 - Github Copilot に思考時間を与える
 - 外部のリソースを活用する
 
-#### 指示の明確化
-##### 明確でない例
-```python
-# 速度センサーデータリストから異常値を検出する関数を作成してください。
-def detect_speed_anomalies(speeds):
-    # 速度がマイナスの場合は異常値とみなす
-    anomalies = [speed for speed in speeds if speed < 0]
-    return anomalies
-```
-##### 明確な例
-```python
-# 速度センサーのデータリストから異常値を検出する関数を作成してください。
-# 関数名はdetect_anomaliesで、速度が平均値から3標準偏差以上離れている場合、そのデータポイントは異常とみなします。
-def detect_anomalies(speeds):
-    mean_speed = sum(speeds) / len(speeds)
-    std_dev = (sum([(speed - mean_speed) ** 2 for speed in speeds]) / len(speeds)) ** 0.5
-    anomalies = [speed for speed in speeds if abs(speed - mean_speed) > 3 * std_dev]
-    return anomalies
+### Copilot Chat について
+Copilot Chatは、GitHub Copilotの機能拡張として想定される機能です。GitHub Copilotは、コードを書く際のAI支援ツールとして開発者に提案を行いますが、Copilot Chatはこの概念をさらに進め、より対話的な形式での支援を提供することを目的としています。この機能を通じて、開発者は自然言語での質問や指示を行うことで、特定のコーディングタスクや問題解決に関するAIからの直接的な支援を受けることができます。
+- チャットインターフェイスを通じて、コーディングに関する質問に対する回答を受け取る
+    - チャットインターフェイスを通じて、コーディングに関する質問をCopilotに投げかけることができます。Copilotは、質問に応じて、コードの提案や説明、単体テストや修正プログラムなどを返します。
+- コードの提案や説明を受け取る
+    - コードの提案や説明は、エディターで開いているコードまたはエディターで強調表示したコードスニペットに基づいて生成されます。Copilotは、コードの機能や目的を自然言語で説明したり、コードの改善や最適化のための提案を行ったりします。
+- 単体テストや修正プログラムを生成する
+    - 単体テストや修正プログラムは、エディターで開いているコードまたはエディターで強調表示したコードスニペットに基づいて生成されます。Copilotは、コードの品質や安全性を向上させるために、単体テストのケースやコード内のバグに対する修正プログラムを提供します。
 
-```
 
-#### 参考を与える
-##### 参考を与えない例
