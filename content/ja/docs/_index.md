@@ -3,6 +3,7 @@ title: プロンプトエンジニアリングワークショップ
 linkTitle: ワークショップ資料
 menu: {main: {weight: 10}}
 weight: 10
+url: /
 ---
 
 {{% pageinfo %}}
