@@ -116,7 +116,7 @@ weight: 2
 
 Visual Studio Codeなどのエディタを使うとMarkdownを可視化できます。
 
-![](images/vscode-cfd.png)
+![](../images/vscode-cfd.png)
 
 
 {{% pageinfo %}} 
