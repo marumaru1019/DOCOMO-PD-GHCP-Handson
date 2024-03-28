@@ -1,20 +1,16 @@
 ---
 title: プロンプトエンジニアリングワークショップ
+linkTitle: ワークショップ資料
+menu: {main: {weight: 10}}
+weight: 10
+url: /
 ---
 
-{{< blocks/cover image_anchor="top" height="full" >}}
-<a class="btn btn-lg btn-primary me-3 mb-4" href="/docs/overview/">
-  ワークショップ資料はこちら <i class="fas fa-arrow-alt-circle-right ms-2"></i>
-</a>
-{{< /blocks/cover >}}
+{{% pageinfo %}}
+最新版が2024/02/20にリリースされました。
+{{% /pageinfo %}}
 
-
-{{% blocks/lead color="primary" %}}
 OpenAIが開発した大規模な言語モデルGPTを活用すると、テキスト生成/自然言語理解/文章の翻訳などのさまざまなタスクをこなすことができます。これらを業務に活用することで、これまで負荷のかかっていた作業を省力化できる可能性があるため、大きく注目されています。
 
-このワークショップは、ChatGPTを効果的に利用するためのプロンプトエンジニアリングを学ぶためのものです。ワークショップでは、ChatGPTの適切な使い方を学び、業務で役に立つ実践的なプロンプトを紹介します。
-{{% /blocks/lead %}}
+このワークショップは、ChatGPTを効果的に利用するためのプロンプトエンジニアリングを学ぶためのものです。ChatGPTの適切な使い方を学び、業務で役に立つ実践的なプロンプトを紹介します。
 
-
-{{% blocks/section color="dark" type="row" %}}
-{{% /blocks/section %}}
