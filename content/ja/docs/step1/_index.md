@@ -1,6 +1,6 @@
 ---
 title: 基本編
-categories: [業務利活用,ソフトウエアエンジニア向け]
+categories: [業務利活用,技術者向け]
 weight: 2
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: ⑩画像を生成する
 categories: [業務利活用]
-tags: [Image,課題発表]
+tags: [Image]
 weight: 10
 ---
 
@@ -24,12 +24,12 @@ Copilot (Bing Chat Enterprise) には、**会話のスタイル**という設定
 次のプロンプトを入力します。
 
 ```text
-東京で撮影された夜の首都高速を走る、白色・SUV・ホンダ・ナンバープレートが1234の車の画像を生成してください。
+東京で撮影された満月の夜に川沿いに咲く桜の画像を生成してください。
 ```
 
 ### :robot: 出力例
 
-![サンプル画像](../images/image-generate-sample.png)
+![サンプル画像](https://github.com/marumaru1019/github-image/assets/70362624/c8209bfa-5e44-4d40-88af-85afb878fc45)
 
 
 ### :bulb: プロンプトと生成された画像を記録しておく
@@ -47,13 +47,3 @@ Copilot (Bing Chat Enterprise) には、**会話のスタイル**という設定
 ```
 
 <img src="../images/image-generate-sample2.png" width="200px" />
-
-{{% pageinfo %}} 
-#### :desktop_computer: 課題発表 - 30分
-
----
-今の業務で役に立ちそうな画像を生成してください。
-発表者はTeamsで画面共有を行い、どのようなプロンプトを実行したか、プロンプトで工夫したポイントを簡単に説明してください。
-
-参加者の皆さんは発表内容に対して自由にコメントやディスカッションを行いましょう。 
-{{% /pageinfo %}}

@@ -1,6 +1,6 @@
 ---
 title: ②出力形式を指定する
-categories: [業務利活用,ソフトウエアエンジニア向け]
+categories: [業務利活用,技術者向け]
 tags: [json, csv, Format]
 weight: 2
 ---
@@ -13,9 +13,9 @@ weight: 2
 次のプロンプトを入力します。
 
 ```text
-車載機器から以下のデータを送信します。
+ユーザー情報の送信を行います。
 次のキーでJSON形式で提供してください。
-id, longitude, latitude, speed, acceleration_rate
+username, password, email, phone, address
 
 **説明や装飾は不要です。出力はJSONのみ回答してください**
 ```
@@ -25,11 +25,11 @@ id, longitude, latitude, speed, acceleration_rate
 
 ```json
 {
-  "id": "車載機器から取得したID",
-  "longitude": "経度データ",
-  "latitude": "緯度データ",
-  "speed": "速度データ",
-  "acceleration_rate": "加速度データ"
+  "username": "example_user",
+  "password": "example_password",
+  "email": "example@example.com",
+  "phone": "1234567890",
+  "address": "123 Example Street, City, Country"
 }
 ```
 
