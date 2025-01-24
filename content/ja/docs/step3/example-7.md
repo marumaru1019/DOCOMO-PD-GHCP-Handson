@@ -1,29 +1,27 @@
 ---
-title: ⑦実装方針の策定 ～ 要件＋既存コードに基づいた詳細な実装指針
+title: ⑦ 実装方針の策定
 categories: [GitHub Copilot, Engineer Usecases]
 weight: 7
 ---
 
-新機能を追加するときは、**要件(何を作るか)** と **既存コード(変更対象)** を一緒に提示し、**実装方針**を Copilot に策定してもらうとスムーズです。ここでは、**「ポイントシステムを加える」**という要件と、**既存の `UserService.java` / `OrderService.java`** を例に示し、**どのような作業が必要かレベル**まで落とし込んだ**プロンプト**と、**Copilotの出力例**を提示します。
+新機能を追加するとき、**要件 (何を作るか)** と **既存コード (どこに手を加えるか)** を同時に提示し、**実装方針**を Copilot に考えてもらうと効率的です。ここでは「**ポイントシステムを加える**」という要件と、**既存の `UserService.java` / `OrderService.java`** を例に示し、**Copilot にどのような作業が必要かレベルまで落とし込んだ指針を出してもらう**かを紹介します。
 
 ---
 
-## 前提
+## 前提ファイル
 
-### 要件ファイル (requirements.md)
+### requirements.md (要件ファイル)
 
 ```markdown
-# Points System Requirements
-
 1. 購入金額に応じてポイント加算
    - 1円 => 1ポイント
-2. 合計ポイントが 100 を超えたら VIP 扱い (UserService 側でフラグ管理)
-3. OrderService から purchase(...) 後に自動でポイントを追加
-4. 後日、API や画面で "Your points" "VIP: true/false" を表示予定
-5. DB 更新 or メモリ管理: まずはメモリ管理でもOK
+2. 合計ポイントが100を超えたらVIP扱い (UserService側でフラグ管理)
+3. OrderServiceから purchase(...) 後に自動でポイントを追加
+4. 後日、APIや画面で "Your points" "VIP: true/false" を表示予定
+5. DB管理 or メモリ管理: まずはメモリ管理でもOK
 ```
 
-### 既存の `UserService.java`
+### UserService.java (既存コード)
 
 ```java
 package com.example;
@@ -47,7 +45,7 @@ public class UserService {
 }
 ```
 
-### 既存の `OrderService.java`
+### OrderService.java (既存コード)
 
 ```java
 package com.example;
@@ -61,76 +59,83 @@ public class OrderService {
 }
 ```
 
+このように、**ポイント管理**がまだ実装されていないコードと、**要件定義**がある状況を前提に、Copilot に「どう実装すればいいか？」の**詳細プラン**を聞き出します。
+
 ---
 
-## プロンプト例
+### :pen: 例題 – 実装方針を Copilot に聞く
 
-以下は、**Copilot** に「どのような作業が必要か、レベル**まで**具体的に落とし込んだ**実装方針**を出してほしい」と依頼するときのサンプルです。
-この際に、UserService.javaとOrderService.javaをコンテキストにアタッチしてください。
+たとえば、以下のように Copilot へ依頼します:
 
 ```text
-#file:requirements.md を踏まえ、実装方針を策定してください。
-具体的に「どのクラスにどんなフィールド／メソッドを追加するか」「メインの作業工程は何か」など、詳細な作業リストを教えてください。
+#file:requirements.md を踏まえて、
+UserService.java と OrderService.javaを修正してポイントシステムを追加したい。
+どのクラスにどのフィールドやメソッドを加え、どんな作業手順になるかレベルで詳細な実装方針を出してください。
 ```
+
+**ポイント**  
+- 「要件ファイル (requirements.md)」と「既存コード (UserService, OrderService)」を **#file** や隣接タブで同時参照させる  
+- 「何を加えるべき？」 「どの工程でやる？」と**具体的なタスク**を聞く
 
 ---
 
-## Copilot 出力例（イメージ）
+### :robot: 出力例
 
-以下は、Copilot が返す可能性のある**詳細な実装方針**例。  
-「**どういうクラスに何を追加し、どんな処理が必要か**」が明確になることで、**エンジニアが実際に作業しやすく**なります。
+Copilot が返す**実装方針の例**:
 
 ```
-提案：ポイントシステム追加の詳細な実装方針
+提案：ポイントシステム追加の詳しい実装プラン
 
-1) UserService の拡張
+1) UserService クラス拡張
    - フィールド:
-     * private int points = 0;  // 合計ポイント
-     * private boolean vip = false;  // VIPフラグ
+     private int points = 0; //合計ポイント
+     private boolean vip = false; //100pt超えたらVIP
    - メソッド:
-     * addPoints(int amount):
-       - points += amount;
-       - if (points > 100) { vip = true; }
-     * getPoints(): int
-     * isVip(): boolean
+     public void addPoints(int amount):
+       -> points += amount;
+       -> if (points > 100) vip = true;
+     public int getPoints():
+     public boolean isVip():
    - 作業工程:
-     - フィールドとゲッター/セッター/ロジックを追加
-     - 既存のコンストラクタは userName だけ -> 変更不要だが、points と vip の初期値を設定
+     A. フィールドとゲッター/セッターを追加
+     B. コンストラクタで points=0 / vip=false に初期化
 
-2) OrderService と UserService を連携
-   - OrderService内で purchase(...) 後に userService.addPoints(amount) を呼ぶ
-   - userService インスタンスを注入 or渡す:
-     - 例えば OrderService のコンストラクタで受け取る (DI対応は後でも可)
+2) OrderService との連携
+   - OrderService で purchase(...) のあとに userService.addPoints(amount)を呼ぶ
+   - フィールド or 引数で userServiceを渡す (DIは後で)
    - 作業工程:
-     - OrderServiceに UserService フィールドを追加
-     - purchase(itemName, amount) の最後で userService.addPoints(amount);
+     A. OrderServiceに UserService userService を追加
+     B. purchase(...)の末尾で userService.addPoints(amount);
 
-3) メインの作業工程まとめ
-   - A: UserServiceクラス修正
-     * int points, boolean vip フィールド
-     * addPoints(int), getPoints(), isVip()
-   - B: OrderServiceクラス修正
-     * UserServiceをフィールドに持つ
-     * purchaseの最後で userService.addPoints(amount)
-   - C: 動作確認
-     * メイン or テストコードで userService, orderService を生成
-     * purchase("PC", 120000) → userService.getPoints() >=120000 → vip=true
-     * consoleに "VIP: true" など確認
-
-4) 今後の拡張
-   - DB管理へ移行する際は points と vip を DBカラムに追加
-   - Web層で "Your points" "VIP status" を表示するAPIを別途作成
-   - Performance: if 追加ロジックが大きい場合、DIなどで設計見直し
+3) 全体のステップ
+   - 1) UserService修正
+   - 2) OrderService修正
+   - 3) テスト/動作確認
+     -> mainや単体テストで userService + orderService生成
+     -> purchase("PC", 120000) => userService.getPoints()=120000 => VIP=true
+   - 4) 今後: DB移行, 画面表示, etc.
 ```
 
-Copilot はこのように**ステップごとの作業**や**フィールド追加の詳細**まで出してくる可能性があります。  
-エンジニアはこれを叩き台にして**最終設計**を整えればOKです。
+このように、**何を追加**し、**どう呼び出すか**や**作業順**などをCopilotが提示します。エンジニアはこれを**たたき台**にさらに細かい仕様を詰められます。
+
+---
+
+### :memo: 練習
+
+1. **実際に実装してみる**  
+   - Copilotの出したプランを基に、UserServiceやOrderServiceを**実際に修正**  
+   - Copilot に「実装コードも書いて」と頼む  
+2. **要件を足す**  
+   - 例: 「ポイント有効期限がある」「VIP後もポイントが減ればVIP解除」 → Copilotがどのような追加案を提示するか  
+3. **改修後のレビュー**  
+   - できたら「この実装案で改善点ある？」とCopilotに聞き、**レビューコメント**をもらう
 
 ---
 
 ## まとめ
 
-- **要件 (requirements.md)** と **既存コード (UserService.java / OrderService.java)** を **#file** で渡し → Copilot に**実装方針**を尋ねる  
-- **具体的に「どんなフィールド/メソッドを足す？」「作業工程は？」** と聞く → Copilot が作業リストを提示  
-- 提案はあくまで**参考** → エンジニアが**最終判断**や**設計調整**  
-- こうして**要件 + 既存コード**をまとめて提供するだけで、**Copilot** が**段階的かつ詳細**なアプローチを示してくれるため、**新機能の実装**を効率よく始められます。
+- **要件ファイル + 既存コード**をセットで提示 → Copilotが**具体的な実装方針**を提案  
+- 「どのクラスに何のフィールド/メソッド」レベルで作業を落とし込む → **エンジニア**はそれを**叩き台**に設計調整  
+- **実装後、テストやレビュー**を行い、仕上げていく流れがスムーズ  
+
+こうして**Copilot**を「**要件**と**既存コード**を合わせた文脈」で利用すれば、**新機能追加の方針**が素早く固まり、**開発効率**がアップします。

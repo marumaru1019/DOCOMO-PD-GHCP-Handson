@@ -1,5 +1,5 @@
 ---
-title: ①コード補完
+title: ① コード補完
 categories: [技術者向け, GitHub Copilot 基本]
 tags: [json, csv, Format]
 weight: 1
@@ -9,7 +9,7 @@ GitHub Copilot の最も基本的な使用法のひとつが**コード補完**�
 
 ---
 
-## :pen: 例題 – 途中まで書いて提案を受け取る
+## :pen: 例題
 
 1. **Java クラスとメソッド**  
    まず、メソッド本体をコメントだけにして止めてみます。
@@ -17,7 +17,7 @@ GitHub Copilot の最も基本的な使用法のひとつが**コード補完**�
    ```java
    public class CalculationExample {
        public static int calculateSum(int a, int b) {
-           // TODO: implement logic
+         // ここで実装を中断
        }
    }
    ```
@@ -34,14 +34,12 @@ GitHub Copilot の最も基本的な使用法のひとつが**コード補完**�
 ```java
 public class CalculationExample {
     public static int calculateSum(int a, int b) {
-        // TODO: implement logic
-        int sum = a + b;
-        return sum;
+        return a + b;
     }
 }
 ```
 
-Tabキーを押して承認すると、このように本体が一瞬で完成します。Copilot は「int sum = a + b; return sum;」のようなシンプルな実装を提示する場合が多いです。
+![Image](https://github.com/user-attachments/assets/7a1d1810-fc53-4e94-a789-0067efed9d58)
 
 ---
 
@@ -60,14 +58,15 @@ Tabキーを押して承認すると、このように本体が一瞬で完成�
 GitHub Copilot が複数行をまとめて提案した場合、「全部はいらないけど、一部だけ取り込みたい」ことがあります。そこで**部分的な受け入れ**が可能です。
 
 1. **次の単語だけ承諾**  
-   - マウスを候補上に置くと「Wordを承諾」というボタンが表示される  
+   - マウスを候補上に置くと「Accept Word」というボタンが表示される  
    - Windows/Linux なら **Ctrl + →**、macOS なら **Cmd + →** などのショートカットで行うこともできる
+   ![Image](https://github.com/user-attachments/assets/f0caf83c-d0e8-4543-99e4-ad9e772c9fe5)
 
 2. **次の行だけ承諾**  
-   - デフォルトではキーボードショートカットが設定されていない場合がある  
+   - マウスを候補上に置くと「Accept Line」というボタンが表示される  
    - `editor.action.inlineSuggest.acceptNextLine` にカスタムのキーを割り当てると「この行だけ承諾」できる
+   ![Image](https://github.com/user-attachments/assets/f8c85e30-e66e-4b3c-8cdf-a02f70fd8ab7)
 
-**例**: Copilot がログ出力含めた提案を一気に書いてきたが、ログは不要で「int sum = a + b; return sum;」だけ欲しい場合、行単位で承諾しながら不必要な行を飛ばすことができます。
 
 ---
 
@@ -80,6 +79,9 @@ GitHub Copilot が複数行をまとめて提案した場合、「全部はい�
 
 2. **部分的承諾**  
    ログ出力や不要な初期化コードを含む提案が出た場合、一部だけを承諾・残りをスキップしてみましょう。
+
+3. **候補の一括表示機能**
+   `Ctrl + Enter` をすると、複数候補が出ることを確認してみましょう。
 
 ---
 

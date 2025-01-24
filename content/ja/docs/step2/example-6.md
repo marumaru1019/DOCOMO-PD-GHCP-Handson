@@ -4,89 +4,57 @@ categories: [GitHub Copilot, Prompt Engineering]
 weight: 6
 ---
 
-Copilot は、**開いているファイル**や**チャット履歴**の文脈を参照します。しかし、その**文脈が膨大・不要**だと、**正しい情報**を読み取れずに誤ったコードが返される可能性があります。ここでは、**多数のAPI定義が書かれたMarkdownファイル**から、**少し特殊な(癖のある)APIのみ**抜き出して使いたい場面を例示します。さらに、**履歴を整理**する方法も紹介します。
+**GitHub Copilot** は、**開いているファイル**や**チャット履歴**の文脈を参照してコード提案を行います。もしその**文脈が膨大で不要**な情報にあふれていると、Copilot が誤ったコードを生成するリスクが高まります。ここでは、**API 定義が多い Markdown** から **一部の特殊な API** だけ使いたい例を取り上げ、**不要なコンテキストをどう排除するか**を解説。さらに、**履歴を整理**する手段も紹介します。
 
 ---
 
-## 例題: 膨大なAPI定義の中から「特殊なユーザーAPI」だけ参照
+### :pen: 例題
 
-### シナリオ
+#### シナリオ
+- **既存ファイルの参照**: `api_definitions.md` に大量のAPIが書かれている  
+- **特定のなユーザーAPIの使用** (`GET /api/v1/users?region={region}&includeInactive=true`) だけ使いたい  
+- **新ファイルの作成**: `UserApiClient.java` を作り、そのAPIを呼び出すロジックを実装する
 
-- **既存ファイル**: `api_definitions.md` に複数のAPIが長々と書いてある  
-- その中には**少し癖のある**「`GET /api/v1/users?region={region}&includeInactive=true`」APIがある  
-- **新ファイル**: `UserApiClient.java`  
-  - この特定APIを呼び出してユーザー一覧を取得したい  
-  - 他のAPIは無視する  
-
-#### Markdown ファイル (api_definitions.md) 例
+##### `api_definitions.md` (一部抜粋)
 
 ```markdown
-# API Definitions
-
-## 1. GET /api/v1/products
-- Description: Retrieve list of products.
-- Query params: category (optional)
-- Response: JSON array of product objects, each with id, name, price
-
-## 2. POST /api/v1/orders
-- Description: Create a new order.
-- Request body: { "userId": number, "items": [...] }
-- Response: { "orderId": 123, "status": "created" }
-
-## 3. GET /api/v1/users?region={region}&includeInactive=true
+## 1. GET /api/v1/users?region={region}&includeInactive=true
 - Description: Retrieve users in a specific region.
 - Query params:
-  - region: string (e.g. "EU", "US")
-  - includeInactive: boolean (if true, returns inactive users as well)
+  - region: string
+  - includeInactive: boolean
 - Response: JSON array of user objects
-  e.g. [ { "id": 1, "name": "Alice", "region": "EU", "active": false }, ... ]
-
-## 4. DELETE /api/v1/admin/cleanup
-- Description: Performs admin-level cleanup.
-- Query params: none
-- Response: { "status": "ok" }
-
-... (more definitions not relevant) ...
 ```
 
-**実際にはさらに多くのAPIが記載**されているが、ここでは「`GET /api/v1/users?region={region}&includeInactive=true`」だけ使いたい、というケース。
+**実際**にはさらに多くのAPIが含まれているが、ここでは**このAPI** だけ利用したい。
 
----
-
-## 不要なコンテキストを排除 (参照コードの抜粋)
-
-### :pen: プロンプト例（チャットビュー）
+#### プロンプト例
 
 ```text
-API 定義を参考にして新しいファイル "UserApiClient.java" をJava 17で作成し、下記を満たしてください:
+"UserApiClient.java" をJava17で記述してください:
 - メソッド: fetchUsersByRegion(String region, boolean includeInactive)
-- このAPIを呼び出してユーザー一覧を取得し、List<User> を返す
-- (Userオブジェクトは {id, name, region, active} を持つ想定)
+- #selection  の API を呼び出す
+- 戻り値: List<User>
+  - User: {id, name, region, active}
 ```
 
----
+この際、**#selection** には `GET /api/v1/users?region={region}&includeInactive=true` の定義を含めてください。
 
-## :robot: 出力例 (イメージ)
+### :robot: 出力例
 
 ```java
-package com.example;
-
-import java.net.*;
-import java.io.*;
-import java.util.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class UserApiClient {
-
+    
     public List<User> fetchUsersByRegion(String region, boolean includeInactive) throws IOException {
-        // Build URL with query params
-        String urlStr = String.format("http://example.com/api/v1/users?region=%s&includeInactive=%b", 
+        String urlStr = String.format("https://example.com/api/v1/users?region=%s&includeInactive=%b",
                                        region, includeInactive);
+
+        // HTTP GET
         URL url = new URL(urlStr);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
 
-        // Read response
+        // Parse response JSON
         try (InputStream in = conn.getInputStream()) {
             ObjectMapper mapper = new ObjectMapper();
             User[] usersArray = mapper.readValue(in, User[].class);
@@ -96,38 +64,34 @@ public class UserApiClient {
 }
 ```
 
-Copilot は、**MarkdownのAPI定義**「GET /api/v1/users?region={region}&includeInactive=true」を参照して、**HTTPリクエスト**や**JSONレスポンス**の処理を生成してくれます。
+**不要API** (`/api/v1/products`, `/api/v1/orders` など) は**文脈**に含めず、**一部**だけ抜粋したため、Copilot は**望み通りのAPI**を使うコードを生成しやすくなります。
 
 ---
 
-## 履歴を整理 – 新たなタスクでクリア
+### :bulb: 履歴の整理
+チャットの履歴に一貫性がないと、Copilot が**誤った文脈**を読み込んでしまうリスクがあります。そのため、**不要なコンテキスト**を排除し、**必要な部分**だけ提示することが重要です。
+新しく話題を始める際は、**新規チャット**を開始するか、**/clear** コマンドで履歴をリセットすることで、Copilot が**正確なコード**を生成しやすくなります。
 
-### 方法1: /clear コマンド
-- 一部の環境では、チャット欄に `"/clear"` と入力すると**過去履歴が削除**される
+#### Tips
+チャットの上部にある **巻き戻しマーク** をクリックすると、**過去のスレッド**を見直すことができます。これにより、一時的に新しいスレッドを開始したけど、前の文脈に戻りたいという際に便利です。
+![Image](https://github.com/user-attachments/assets/4ff69a21-97cf-4d42-b8fa-31054f86d1c1)
 
-### 方法2: 新規チャット開始
-- **巻き戻しマーク**や **「+」アイコン**などで**新しいスレッド**を開始 → 以前の会話を参照しない  
+### :memo: 履歴を整理する方法
 
-### 方法3: 履歴を手動削除
-- **巻き戻しマーク(ヒストリー)** から過去のメッセージを削除  
-- これで不要な文脈をカット
+1. **/clear コマンド**  
+   - Copilot チャットに `/clear` を入力できる環境では、履歴をリセットし、古い文脈をクリア  
+2. **新規チャット開始**  
+   - チャット履歴が混み合ってきたら、新しいスレッドや「+」アイコンなどで**ゼロから**会話を始める  
+3. **巻き戻しマークで整理**  
+   - 過去メッセージを削除して不要な文脈を消す 
+   - **巻き戻しマーク**をクリックして、過去のスレッドを見直す
 
----
-
-## 練習
-
-1. **別のAPI定義**を指定
-   - POST /api/v1/orders だけ使いたい → Copilot がどう提案するか
-2. **一度にまとめて頼む**  
-   - 「全部のAPIを同時に実装して」とゼロショットで頼む → Copilot が混乱しないか比較
-3. **履歴をあえて増やす → /clear**  
-   - 前のタスクが大量にあった状態で**新しいタスク**を依頼 → 結果があいまいにならないかテストし、**/clear** で改善するか検証
+不要なコードや会話ログを Copilot が参照しないようにすると、**誤推測**が減り、**意図通り**の提案が得やすくなります。
 
 ---
 
 ## まとめ
 
-- **膨大なAPI定義**から**1つ**だけ必要な場合、**不要部分はカット or 無視するよう指示**  
-- **Copilot** は、**#file** 指定やファイル抜粋を通じて**必要な定義のみ**を読み込みやすくなる  
-- **履歴が混み合う**と、**誤った文脈**が混ざりやすい → **/clear** コマンドや**新規チャット**でリセット  
-- こうして**不要なコンテキストを排除**し、**履歴を整理**することで、Copilot に確実に「必要なコード」だけを意識させることができます。
+- **大量のAPI定義などがある場合**、必要な部分だけ**抜粋**または**#file**指定 → Copilot が**誤った文脈**を読み込まないようにする  
+- **履歴が膨大**だと、Copilot が混乱するリスク上昇 → **/clear** や**新規チャット**で歴史を整理  
+- このように**不要なコンテキスト**を排除し、**必要部分**だけ提示すれば、Copilot が**精度の高いコード**を提示してくれます

@@ -1,17 +1,17 @@
 ---
-title: ➃ボトルネック箇所の修正や最適化
+title: ④ ボトルネック箇所の修正や最適化
 categories: [GitHub Copilot, Engineer Usecases]
 weight: 4
 ---
 
-**Copilot** を活用すると、現状のロジックに**ボトルネック箇所**がある場合、その**原因や最適化の方針**を提示してもらえます。並列処理・非同期化・Stream API の活用などの **“ヒント”** を得ながら、自分で**性能検証**を行いつつ、**提案コード**を採用すれば効率的にパフォーマンスを向上させられます。
+大規模なコードや複数ファイルを扱うプロジェクトでは、**ボトルネック箇所**が見つかると大幅なパフォーマンス低下を招きます。**GitHub Copilot** を利用すれば、その**原因のヒント**や**並列処理・非同期化**などの**最適化サンプル**を得られます。ただし、最終的には自分で**性能検証**を行い、**提案コード**が実際に効果を発揮するかを確認することが重要です。
 
 ---
 
-## 例題 – ボトルネックを含む Java コード
+### :pen: 例題 – パフォーマンスに問題のあるサンプルコード
 
-以下に、**性能的に問題のある**サンプルコードを示します。  
-たとえば、**複数ファイル**の行数を合計する際に、**単一スレッドで**かつ**冗長なロジック**を使って読み込んでいます。
+以下は、**多数のファイルを1つずつ読み込み、行数を合計**している Java コードです。  
+単一スレッド + 冗長ロジックによる**ボトルネック**が考えられます。
 
 ```java
 package com.example;
@@ -61,44 +61,24 @@ public class FileLineCounter {
 }
 ```
 
-### 問題点例
-- **すべて単一スレッド**で処理しており、ファイル数が多い場合に遅い  
-- 毎回 `ArrayList` に読み込んでから `.size()` で行数取得 → メモリ的にも非効率  
-- `FileReader` → `BufferedReader` を都度生成・破棄している
+**主な問題点**  
+- **全て単一スレッド**で処理しており、ファイル数が多いと遅くなる  
+- 毎回リストに行をためて `.size()` を取るだけ → メモリが無駄に消費  
+- `FileReader` + `BufferedReader` を都度作って閉じる → 開閉回数が多くなる  
 
 ---
 
-## 1. Copilot でボトルネックを発見するヒントをもらう
+### :robot: 出力例 – Copilot による最適化サンプル
 
-### :pen: プロンプト例（チャットビュー）
-
-```text
-このJavaコードに性能的なボトルネックがあると思います。効率を上げたいので、並列処理やStream APIを使うアイデアをください。どのように最適化すればいいでしょう？
-```
-
-### :robot: Copilot の提案イメージ
-
-Copilot が、例えば以下のような**ヒント**を返すかもしれません:
-```
-- ファイルを並列に読み込むために ExecutorService を使って、各ファイルの行数カウントを並列実行する
-- 行数だけなら、readLine→ArrayList への追加を省略し、カウンタを回すだけで済む
-- try-with-resources 構文で close 処理を簡潔に書く
-- Stream API を活用して Files.lines(...) で行数をcountできる
-```
-
----
-
-## 2. Copilot に実装を任せる
-
-### :pen: プロンプト例
+#### プロンプト例
 
 ```text
-では上記のアドバイスをもとに、ExecutorService を使って複数ファイルを並列に行数カウントする方法を書いてください。
-ファイル名リストを受け取り、最終的な合計行数を返すメソッドを新設してください。
-言語: Java 17
+このJavaコードが遅いので、並列処理やStream APIを使った最適化案をください。
+ExecutorServiceなどを使って複数ファイルを同時に行数カウントしたいです。
 ```
 
-### :robot: 出力例
+Copilot は以下のような**並列処理**を用いた書き直しを提案してくれるかもしれません。
+
 ```java
 import java.io.*;
 import java.nio.file.*;
@@ -108,7 +88,9 @@ import java.util.concurrent.*;
 public class ParallelFileLineCounter {
 
     public static long countTotalLinesInParallel(List<String> filePaths) throws InterruptedException {
-        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        ExecutorService executor = Executors.newFixedThreadPool(
+            Runtime.getRuntime().availableProcessors()
+        );
         List<Future<Long>> futures = new java.util.ArrayList<>();
 
         for (String path : filePaths) {
@@ -119,6 +101,9 @@ public class ParallelFileLineCounter {
                         lines++;
                     }
                     return lines;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return 0L;
                 }
             };
             futures.add(executor.submit(task));
@@ -127,35 +112,38 @@ public class ParallelFileLineCounter {
         long total = 0;
         for (Future<Long> f : futures) {
             try {
-                total += f.get();
+                total += f.get(); // merge partial results
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
         }
+
         executor.shutdown();
         return total;
     }
 }
 ```
-Copilot が**並列処理**や**try-with-resources**、**`Files.newBufferedReader()`** を活用した改善案を提案。
+
+Copilot の提案では、**ExecutorService** を使い **複数ファイル**を**並列**で読み込み、**stream** か**BufferedReader** で行数を数えています。  
+メモリも最小限で済む上、**I/O待ち**を並列化できるため、高速化が期待できます。
 
 ---
 
-## 3. 自分で性能検証
+### :memo: 練習
 
-Copilot が**あくまでサジェスト**ですので、**実際に動作させて**  
-- 本当に速くなったか？  
-- スレッド数で最適化できるか？  
-- I/O がネックではないか？  
-
-といった**パフォーマンス検証**を人間がやる必要があります。
+1. **改良後のコードをビルド＆実行**  
+   - 実際にファイル多数を読み込んで**処理速度**を測定し、**単一スレッド版との違い**を確認  
+2. **更なる最適化を依頼**  
+   - 「ファイルが大きいときにはバッファサイズを増やしてほしい」「Stream APIを全面活用して」と追加指示  
+3. **制限や注意点**  
+   - 大量スレッドを作り過ぎると逆に遅くなる → Copilotの提案を**鵜呑み**にせず、**人間が検証**して最適な構成を見つける  
 
 ---
 
 ## まとめ
 
-- **ボトルネックロジック**を Copilot Chat に貼り「並列化したい」「ストリームAPIを使いたい」と相談すると、サンプル実装の提案を得られる  
-- **Copilot** は「この部分をどう最適化すべき？」という**アイデア**も提示してくれることがある  
-- 最終的な**性能検証やリファクタの妥当性**は手動で確認が必須
+- **性能面に問題のあるロジック**を Copilot Chat に貼り付け、「並列化したい」「余計なリスト化を省きたい」と尋ねると、**サンプル実装**や**ヒント**が得られる  
+- **提案**を適用後は **ビルド＆性能検証** で速度アップを確認 → 必要なら「さらに最適化して」と追加指示  
+- Copilot はあくまで**補佐** → **最終的な正しさ**（レースコンディションの有無、I/O制約など）は人間がチェックして完成度を高める  
 
-こうして**Copilot**を使いながら**パフォーマンス向上**のアイデアや実装サンプルを得ると、**エンジニアの負担**を軽減できます。
+こうした**Copilot**の活用により、**ボトルネックロジック**の**改善案**や**並列化のコード例**を簡単に入手でき、**パフォーマンス最適化**を迅速に行えます。
