@@ -1,23 +1,16 @@
 ---
-title: ⑤関連コードを示す
+title: ⑤ 関連コードを示す
 categories: [GitHub Copilot, Prompt Engineering]
 weight: 5
 ---
 
-Copilot は、**すでにあるファイル**の内容を参照して、新しいファイルやメソッドを生成してくれます。ここでは **`NumberUtils.java`** を事前に用意し、そのメソッドを**新しいファイル**でも利用する例を示します。**関連コードをプロンプトに含める**ことがポイントです。
+**GitHub Copilot** は、**既存ファイル**のコードを**新しいファイル**で活用するときにも大変便利です。ポイントは、**関連するコードをプロンプトに含めて**「このクラスで定義したメソッドを使ってほしい」と明示すること。以下では、**`NumberUtils.java`** をあらかじめ用意してから、新しいクラス `ArrayMultiplier` を生成する例を紹介します。
 
 ---
 
-## 例題
+### :pen: 例題
 
-### シナリオ
-
-- 既存の **`NumberUtils.java`** には複数の数値操作メソッドがある（`triple`や`square`など）。
-- **新しく** `ArrayMultiplier.java` を作って、`NumberUtils.triple()` を活用し、配列要素を3倍化したい。
-
----
-
-## NumberUtils.java（既存の全体コード）
+#### 既存ファイル `NumberUtils.java`
 
 ```java
 public class NumberUtils {
@@ -45,27 +38,25 @@ public class NumberUtils {
 }
 ```
 
-このファイルを**Copilot が参照**にして、新しいファイル `ArrayMultiplier.java` を作成します。
+ここで定義された **`triple`** や **`square`** などのメソッドを**新ファイル**でも呼び出したい場合、プロンプトで「**#file:NumberUtils.java**」と指定することで、明示的に関連ファイルを示すことができます。
 
----
-
-## プロンプト例
+#### プロンプト例
 
 ```text
-
 #file:NumberUtils.java
 
-要件に従って、新しいクラス `ArrayMultiplier` を作成してください。
 要件:
-- クラス名: ArrayMultiplier
+- 新しいクラス名: ArrayMultiplier
 - メソッド: multiplyArrayByTriple(int[] arr)
-  - 戻り値: int[] (配列要素をNumberUtils.tripleで3倍にしたものを返す)
-- Javaバージョン: 17
+- 戻り値: int[] (配列内の値をNumberUtils.tripleで3倍にして返す)
+- 言語: Java 17
 ```
+
+Copilot は既存 `NumberUtils.java` を踏まえて、**`triple`** メソッドを呼び出すコードを提案してくれるはずです。
 
 ---
 
-## :robot: 出力例（イメージ）
+### :robot: 出力例
 
 ```java
 public class ArrayMultiplier {
@@ -80,25 +71,28 @@ public class ArrayMultiplier {
 }
 ```
 
-Copilot は、**既存の `NumberUtils.triple`** メソッドを参照し、**新規クラス**でそれを呼び出すコードを提案。  
+Copilot が **`NumberUtils.triple(...)`** を呼び出すロジックを自動生成。既存ファイルの関数を流用します。
 
 ---
 
-## 練習
+### :bulb: Attach Context ボタンでの参照ファイルの明示
+チャットの入力欄にある、ファイル添付ボタンを使うと、**関連ファイル**を明示的に指定できます。これにより、Copilot が**既存メソッド**を呼び出すロジックを**自然に補完**してくれるでしょう。
+![Image](https://github.com/user-attachments/assets/91793791-056a-4481-8fde-b0af74ec8b9a)
 
-1. **追加依頼**  
-   - 「`NumberUtils.square()` も使ってみて」と頼んで `ArrayMultiplier` に `multiplyAndSquare(int[] arr)` を追加させる  
-2. **不要ファイルを閉じる**  
-   - 意図的に `UnrelatedFile.java` などを閉じてから、Copilot に依頼し、**無関係な提案**が減るか試す  
-3. **プラットフォーム指定**  
-   - 「Spring Boot環境で使うために、`ArrayMultiplier`に `@Service`アノテーションを付けて」 → Copilot が `import org.springframework.stereotype.Service;` 等を補ってくれるか観察
+---
+
+### :memo: 練習
+
+1. **他のメソッドも使う**  
+   - 追加で「squareで2乗にするメソッド」や「sumを使った計算」を取り入れてみる  
+2. **複数ファイルを参照**  
+   - 他のファイルも参照するように指定し、Copilot が**関連コード**を活かした提案をするか確認する
 
 ---
 
 ## まとめ
 
-- **既存コード** (e.g. `NumberUtils.java`) を参照させるには、**開いている状態**か **#file指定**で明確に伝える  
-- Copilot は既存メソッド (`triple`, `square`, `sum`) を認識し、**新しいクラス**でも自然に呼び出すロジックを生成  
-- **不要なファイル**を閉じたり、**必要なファイルだけ選択**することで、Copilot が**誤った推測**をしにくくなる  
+- **関連コードを示す**(既存ファイルを開く、もしくは `#file:xxx` と指定) → Copilot が **既存メソッド** を呼び出すロジックを**自然に補完**  
+- 大規模プロジェクトでも、**ピン留め**や**隣接タブ**を使い、**関連ファイル**を常に開いておけば Copilot が**的確な補完**を行いやすい  
 
-こうして**関連コードを示す**ことで、Copilot が**既存実装**を踏襲しながら**新しいファイル/メソッド**を的確に書いてくれます。
+こうして**既存のコード**を活かして**新ファイル**を作る際も、Copilot が**差分部分**を自動的に埋め、**効率的**に開発を進められます。

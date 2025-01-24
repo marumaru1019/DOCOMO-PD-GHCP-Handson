@@ -1,17 +1,18 @@
 ---
-title: ③テスト設計に基づいた単体テストの自動生成
+title: ③ テスト設計に基づいた単体テストの自動生成
 categories: [GitHub Copilot, Engineer Usecases]
 weight: 3
 ---
 
-プロジェクトで **ソートアルゴリズム**など複数のクラスに対して、**あらかじめ策定したテスト設計**（テストケース）を元に単体テストを一括生成したい、というニーズはよくあります。**Copilot** を使えば、**テスト用の設計書**を **`#file`** で読み込ませたり、**複数ファイル**を同時にコンテキストに含めることで、**効果的にテストコード**を自動生成できます。さらに **Copilot Edits**(プレビュー) を利用すると、**ファイル全体をまとめて生成**・編集していく流れもスムーズになります。
+大規模プロジェクトや複数のクラスに対して、**あらかじめ策定したテスト設計**に沿って**単体テスト**をまとめて作りたい場合があります。**GitHub Copilot** なら、**テスト用の設計書**を `#file` で指定したり、**複数ファイル**をまとめてコンテキストに含めることで、一度に**効率よく**テストコードを自動生成可能です。さらに **Copilot Edits**(プレビュー) を使うと、**複数のテストファイル**をまとめて提案・編集してもらえるためフローがスムーズになります。
 
 ---
 
-## 1. ソースコード – 3つのソートクラス
+### :pen: 例題
 
-### BubbleSort.java
+#### 1. ソースコード – 3つのソートクラス
 
+##### BubbleSort.java
 ```java
 package com.example;
 
@@ -30,8 +31,7 @@ public class BubbleSort {
 }
 ```
 
-### QuickSort.java
-
+##### QuickSort.java
 ```java
 package com.example;
 
@@ -70,8 +70,7 @@ public class QuickSort {
 }
 ```
 
-### MergeSort.java
-
+##### MergeSort.java
 ```java
 package com.example;
 
@@ -111,39 +110,38 @@ public class MergeSort {
 
 ---
 
-## 2. テスト設計書 (testDesign.md)
-
-以下のマークダウンファイルは **3つのソートクラス**に共通して適用できるテストケースを示しています。
+#### 2. テスト設計書 (testDesign.md)
 
 ```markdown
 下記の実装手順に基づいて、テストケースを設計してください。
+
 step1: 1メソッドにつき2パターン以上の正常系のテストケースを作成
 step2: 1メソッドにつき1パターン以上の異常系のテストケースを作成
 step3: 1メソッドにつき1パターン以上の境界値のテストケースを作成
 step4: 1メソッドにつき1パターン以上の特殊なケースのテストケースを作成
 ```
 
+**BubbleSort** / **QuickSort** / **MergeSort** の3クラスがあり、それぞれに対して**複数のテストパターン**を作りたい。
+
 ---
 
-## 3. Copilot でテスト自動生成 – プロンプト例
+#### 3. Copilot でテスト自動生成 – プロンプト例
 
-### 1) ファイルのコンテキストアタッチ
+- **`#file testDesign.md`** としてテスト設計を読み込む  
+- **3つのソートクラス**を **同時にコンテキスト**として提示  
 
-1. **testDesign.md** を #file で指定  
-2. **BubbleSort.java / QuickSort.java / MergeSort.java** を同時を **コンテキスト**に含める
+##### プロンプト例
 
 ```text
-#file testDesign.md に基づいて参照しているすべての Java クラスに対して、テストコードを生成してください
+#file testDesign.md に基づいて、
+BubbleSort.java / QuickSort.java / MergeSort.java のテストコードを生成してください（Java 17, JUnit使用）
 ```
 
-### 2) Copilot Edits を用いてファイルごと生成
-
-- **Copilot Chat パネル**等で、Copilot Edits機能を使うと「ファイルをまとめて作る」操作がスムーズ  
-- 例: Copilot が**一括で** `BubbleSortTest.java` / `QuickSortTest.java` / `MergeSortTest.java` の3つを提案
+Copilot は**testDesign.md** の指示 (正常系・異常系・境界値・特殊ケース) を踏まえ、3つのテストファイルをまとめて提案してくれる可能性が高いです。
 
 ---
 
-## :robot: 出力例（イメージ）
+### :robot: 出力例
 
 ```java
 // BubbleSortTest.java
@@ -153,82 +151,61 @@ import java.util.Arrays;
 
 public class BubbleSortTest {
 
+    // step1: 2パターン以上の正常系テスト
     @Test
-    public void testEmptyArray() {
+    public void testNormal_small() {
+        int[] arr = {3, 1, 2};
+        BubbleSort.sort(arr);
+        assertArrayEquals(new int[]{1, 2, 3}, arr);
+    }
+
+    @Test
+    public void testNormal_large() {
+        int[] arr = {9,4,7,1,5,2};
+        BubbleSort.sort(arr);
+        assertArrayEquals(new int[]{1,2,4,5,7,9}, arr);
+    }
+
+    // step2: 異常系 (null等?)
+    @Test(expected = NullPointerException.class)
+    public void testAbnormal_nullInput() {
+        BubbleSort.sort(null);
+    }
+
+    // step3: 境界値 (空配列)
+    @Test
+    public void testBoundary_emptyArray() {
         int[] arr = {};
         BubbleSort.sort(arr);
         assertArrayEquals(new int[]{}, arr);
     }
 
+    // step4: 特殊ケース (全て同じ値)
     @Test
-    public void testSingleElement() {
-        int[] arr = {5};
+    public void testSpecial_allSame() {
+        int[] arr = {5,5,5};
         BubbleSort.sort(arr);
-        assertArrayEquals(new int[]{5}, arr);
+        assertArrayEquals(new int[]{5,5,5}, arr);
     }
-
-    // ... (same for ascending, descending, duplicates, large array)
 }
 ```
 
-```java
-// QuickSortTest.java
-import static org.junit.Assert.*;
-import org.junit.Test;
-import java.util.Arrays;
-
-public class QuickSortTest {
-
-    @Test
-    public void testEmptyArray() {
-        int[] arr = {};
-        QuickSort.sort(arr);
-        assertArrayEquals(new int[]{}, arr);
-    }
-
-    // ... (他のテストケース)
-}
-```
-
-```java
-// MergeSortTest.java
-import static org.junit.Assert.*;
-import org.junit.Test;
-import java.util.Arrays;
-
-public class MergeSortTest {
-
-    @Test
-    public void testEmptyArray() {
-        int[] arr = {};
-        MergeSort.sort(arr);
-        assertArrayEquals(new int[]{}, arr);
-    }
-
-    // ... (他のテストケース)
-}
-```
-
-Copilot は**テスト設計書**（testDesign.md）を参照し、**3つのソートクラス**に対して**網羅的なテストケース**を生成します。これにより、**テストコードの初期段階**を効率的に整備できます。
+Copilot が同様に **QuickSortTest.java**、**MergeSortTest.java** も**まとめて**提示し、それぞれ**正常系・異常系・境界値・特殊ケース**が生成されるイメージです。
 
 ---
 
-## 練習
+### :memo: 練習
 
 1. **テスト設計書を拡張**  
-   - 例: 「負の値が含まれる場合」「すべて同じ値の場合」といったケースを追加 → Copilot がどうテストを増やすか確認
-2. **結合テスト的項目**  
-   - 「ソート後の結果を別の関数に渡す」など、**少し複雑なフロー**を指示してみる
-3. **Copilot Edits** でマルチファイル生成  
-   - Chat パネルで「BubbleSortTest.java, QuickSortTest.java, MergeSortTest.java をまとめて作って」と頼む → Copilot が**一括提案**するかを試す
-
+   - 例: 「負の値」「重複値」「極端に大きい配列」などを追記し、Copilot がどうテストを増やすか試す  
+2. **Copilot Edits** でまとめて生成  
+   - 「BubbleSortTest.java, QuickSortTest.java, MergeSortTest.javaを一度に作って」→ **マルチファイルの一括提案**が可能か確認  
 ---
 
 ## まとめ
 
-- **テスト設計書** (testDesign.md) に、各クラスに対応するテスト項目をまとめ → Copilot が**一括**でテストクラスを生成  
-- **複数ファイル** (BubbleSort.java / QuickSort.java / MergeSort.java) を同時に参照することで、それぞれ専用のテストが作成可能  
-- **Copilot Edits** 機能を使うと、**ファイルごと**をまとめて提案・生成するフローがスムーズ  
-- 大量のテストを手書きせず、**最初のドラフト**を Copilot に作らせ → 必要な調整を加える流れが効率的  
+- **テスト設計書 (Markdown)** と**ソースファイル**を**同時にコンテキスト**に → Copilotが**各クラス**に対するテストを**網羅的**に提案  
+- **Copilot Edits** 機能で一度に**複数ファイル**を生成 → 大量のテストをまとめて初期整備  
+- 仕上がったテストは**ビルド＆実行**で検証し、必要なら**追加要望**をCopilotに再依頼し完成度を高める  
 
-これにより、**大規模なテスト作成**でも Copilot と**明確な設計書**を組み合わせることで、**高速かつ網羅的**なテストが整備しやすくなります。
+このように、**テスト設計書**＋**Copilot**による**自動生成**を組み合わせれば、**プロジェクト**のテスト作業が格段にスピードアップします。

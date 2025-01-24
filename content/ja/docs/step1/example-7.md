@@ -1,68 +1,77 @@
 ---
-title: ⑦コードの翻訳
+title: ⑦ コードの翻訳
 categories: [技術者向け, GitHub Copilot 応用]
 weight: 7
 ---
 
-GitHub Copilot は、**異なる言語のコードを翻訳**する際にも活用できます。ここでは、**Python のコードを Java に変換**する方法を、短いサンプルスクリプトを通じて紹介します。
+**GitHub Copilot** を使うと、**異なる言語のコード**を相互に翻訳する際にも効率的に作業できます。ここでは、**Python から Java** に変換する例を紹介しますが、他の言語ペアでも同様に活用できます。
 
 ---
 
-## コードの翻訳 – Python → Java
+### :pen: 例題
 
-1. **Python のコードを用意する**  
-   たとえば、2つの数を足して2乗を返す、シンプルな関数を Python で書いてみましょう。
-   ```python
-   # add_and_square.py
-   def add_and_square(x, y):
-       """
-       Returns (x + y)^2.
-       """
-       sum_value = x + y
-       return sum_value * sum_value
-   ```
-   このコードを実行すると、たとえば `add_and_square(3, 4) = 49`。
+以下のような **Python** コードを **Java** に書き換えたいとします。
 
-2. **Copilot に「Java で書き直して」と頼む**  
-   - チャットビューで、Python コードを選択
-   - 「この Python を Java に翻訳して」と依頼  
-   - 必要なら「JavaDocコメントも追加して」と要望を加える
+```python
+# add_and_square.py
+def add_and_square(x, y):
+    """
+    Returns (x + y)^2.
+    """
+    sum_value = x + y
+    return sum_value * sum_value
+```
 
-3. **Copilot が出力例を提示**（イメージ）
+#### プロンプト例
 
-   ```java
-   public class AddAndSquare {
-
-       /**
-        * Returns (x + y)^2 in Java.
-        */
-       public static int addAndSquare(int x, int y) {
-           int sumValue = x + y;
-           return sumValue * sumValue;
-       }
-
-       public static void main(String[] args) {
-           int result = addAndSquare(3, 4);
-           System.out.println("Result = " + result); // Expect 49
-       }
-   }
-   ```
-   Copilot が自動的にクラスやメソッドの形を整え、コメントを付ける場合があります。
+```text
+Copilot, このPythonコードをJavaに変換してください。
+関数名は addAndSquare にして、JavaDocコメントもつけて。
+```
 
 ---
 
-### Tips & 練習
+### :robot: 出力例
 
-- **ライブラリ依存コード**  
-  Python では標準ライブラリを使っている箇所を、Java 版ではどのように変換するか Copilot に相談  
-- **大きなコードを翻訳**  
-  大規模なファイルを一度に貼り付けると、Copilot が要約して返す可能性あり → 必要に応じて分割して翻訳  
-- **最終チェック**  
-  生成された Java コードをビルドして、**正しく動くか**を確認。メソッド名やクラス構造を微調整しましょう。
+```java
+/**
+ * Returns the square of the sum of x and y.
+ *
+ * @param x the first number
+ * @param y the second number
+ * @return the square of the sum of x and y
+ */
+public class AddAndSquare {
+    public static int addAndSquare(int x, int y) {
+        int sumValue = x + y;
+        return sumValue * sumValue;
+    }
+
+    public static void main(String[] args) {
+        // Example usage
+        int result = addAndSquare(3, 4);
+        System.out.println("The result is: " + result);
+    }
+}
+```
+
+Copilot は**Python の関数**を**Java のクラス＆メソッド形式**に変換し、**JavaDocコメント**も生成してくれます。
 
 ---
 
-**まとめ**  
-- GitHub Copilot に「**このコードを別の言語で書き直して**」と頼むだけで、移植のたたき台を得られる  
-- Python → Java の場合、Copilot が型やクラス構造を推測しながら提案  
-- 大規模な移植の際は、**小分けに翻訳 → コンパイル & 動作確認 → 次のステップ**という流れが安全です。
+### :memo: 練習
+
+1. **他の言語ペア**  
+   - 「C#をTypeScriptに」「RubyをGoに」なども試し、どう変換されるか比較  
+2. **ライブラリ・フレームワーク依存コード**  
+   - Pythonで独自ライブラリを使っている場合、Javaでの対処をどうするかCopilotと対話しながら最適解を探る
+
+---
+
+## まとめ
+
+- **「このコードを〇〇言語に書き換えて」** と頼むだけで、移植の**たたき台**を得られる  
+- **Python → Java** の場合、クラスや型付けなどを**Copilot** が推測して雛形を生成  
+- **大規模な移植**は、**小分け**に翻訳 → **コンパイル＆テスト** → 安定したら次に進む、という流れが安全  
+
+こうして **Copilot** を活用すれば、言語移植の作業時間を短縮しながら、**基本的な構造**を自動で整えることができます。

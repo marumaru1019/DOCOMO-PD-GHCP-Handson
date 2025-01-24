@@ -1,16 +1,16 @@
 ---
-title: ⑥仕様 → API 実装 → Swagger 定義の自動生成
+title: ⑥ Swagger 定義の自動生成
 categories: [GitHub Copilot, Engineer Usecases]
 weight: 6
 ---
 
-**Copilot** は、**完成したコード**を読み取り、**Swagger定義**を自動生成するヒントも提供できます。ここでは、**API実装**が終わった状態で、**実装ファイルを `#file` で渡し**「その実装をもとに Swagger で API 定義書を作ってください」と依頼するイメージを紹介します。
+**GitHub Copilot** は、既に完成している**API実装**を解析し、**Swagger (OpenAPI) 定義**を自動生成するヒントを提供してくれます。ここでは、`UserController.java` のような **CRUD API** 実装が終わった状態で、**`#file`** 指定を使って「Swagger定義書を作ってほしい」と依頼する例を紹介します。
 
 ---
 
-## 1. API の実装が終わった後のシナリオ
+### :pen: 例題
 
-たとえば、`UserController.java` による **CRUD API** が完成し、**Spring Boot + Springdoc** を前提としているとします。
+以下に示す **`UserController.java`** は、Spring Boot + Springdoc 前提の簡易 CRUD 実装です。
 
 ```java
 package com.example;
@@ -67,28 +67,26 @@ public class UserController {
 }
 ```
 
---- 
-
-## 2. Swagger定義を自動生成する – Copilot へのプロンプト例
-
-以下のように**チャットビュー**で `UserController.java` を**#file**指定し、  
-「**この実装をもとにSwagger定義を作って**」と伝えると、Copilot が**OpenAPI/Swagger YAML**を提案してくれます。
+#### プロンプト例
 
 ```text
-#UserController.java の実装をもとにswaggerでAPIの定義書を作成して
+#file:UserController.java
+
+この実装に基づいて、OpenAPIのYAML形式でAPI定義を書いてください。
+タイトル: User Service, バージョン: 1.0.0
 ```
+
+**Copilot** は**Controller** 内の **`/api/v1/users`** などの各エンドポイントを解析し、OpenAPI/Swagger YAMLを提案してくれます。
 
 ---
 
-## :robot: 出力例（イメージ）
-
-Copilot が**OpenAPI/Swagger YAML**を提案:
+### :robot: 出力例
 
 ```yaml
 openapi: 3.0.3
 info:
   title: User Service
-  version: 1.0.0
+  version: "1.0.0"
 paths:
   /api/v1/users:
     get:
@@ -140,6 +138,15 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
     put:
       summary: Update a user
       operationId: updateUser
@@ -172,27 +179,28 @@ paths:
             type: integer
       responses:
         '200':
-          description: OK
+          description: Deleted
 ```
 
-Copilot は、**UserController** の各エンドポイント (`GET/POST/PUT/DELETE`) を解析し、それぞれに対応するOpenAPI定義を**YAML**形式で提案してくれます。  
+Copilot は**GET /api/v1/users**, **POST /api/v1/users**, **GET/PUT/DELETE /api/v1/users/{id}** に対応したスキーマやパラメータを自動的に推測し、**OpenAPI形式**で書き出します。
 
 ---
 
+### :memo: 練習
 
-## 練習
-
-1. **追加のパラメータ**  
-   - たとえば「GET /api/v1/users?region=xx」などのQueryParamを実装に追記し、Copilot に再度「swagger定義を生成して」と頼む  
-2. **OpenAPI Generator** で逆に**クライアントSDK**を作ってみる  
-   - Copilot が出力したYAMLを**OpenAPI Generator**に渡して、Java/Kotlin/TypeScriptクライアントを試作  
+1. **パラメータ追加**  
+   - コードを修正して `@GetMapping(params = "region")` 等を増やした後、「再度OpenAPI定義を生成して」と頼む  
+2. **OpenAPI Generator**  
+   - Copilot が出力した YAML を使って**クライアントSDK**を作る → Copilotに「生成した YAML でクライアントSDKを試したい」と話しかける  
+3. **大規模API**  
+   - 複数Controllerをまとめて `#file:` で指定し「全API分のOpenAPI書いて」と依頼 → どの程度正確に生成されるか試す
 
 ---
 
 ## まとめ
 
-- **API 実装ファイル** (例: `UserController.java`) を **`#file`** 指定 → 「Swagger定義を作って」と依頼  
-- Copilot が**エンドポイント構造**や**HTTPメソッド**等を解析し、**OpenAPI/Swagger YAML**の雛形を提案  
-- さらに**swagger-ui** や **OpenAPI Generator**で **APIドキュメント**や**SDK**を自動生成すれば、**開発効率**が大幅に向上  
+- **API実装** (`UserController.java`など) を **`#file`** として読み込ませ、「Swagger 定義を作って」と伝える → **OpenAPI YAML**をCopilotが自動生成  
+- **HTTPメソッドや@PathVariable**、**RequestBody** の型などを**自動解析** → **paths** や**schema**セクションが埋まる  
+- 生成された YAML は**swagger-ui** や**OpenAPI Generator** でさらに活用可能  
 
-このように、**コードベース**から**Swaggerドキュメント**まで、**Copilot** が連携して自動生成をサポートしてくれるのが大きなメリットです。
+こうして**API実装→Swagger定義**の流れも、Copilotが**コード解析**をして**自動ドキュメント**化に役立つため、**開発効率**が大幅に向上します。
