@@ -1,8 +1,9 @@
 ---
-title: 開発工程での使い方
-categories: [技術者向け]
-weight: 4
+title: 付録
+weight: 6
 ---
 
-開発工程において、GitHub Copilot を活用する方法を紹介します。
+本ワークショップの内容をさらに深く知るための情報をまとめました。
 
++ [GitHub Copilot のチートシート](https://code.visualstudio.com/docs/copilot/reference/copilot-vscode-features)
++ [VS Code の アップデート情報](https://code.visualstudio.com/updates)

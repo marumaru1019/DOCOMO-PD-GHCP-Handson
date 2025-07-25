@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../SBKK-Advanced-Handson"
+		},
+		{
+			"path": "../../../../../GHCP-TodoApp"
+		}
+	],
+	"settings": {
+		"markdown.validate.enabled": true
+	}
+}
