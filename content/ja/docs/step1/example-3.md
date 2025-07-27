@@ -17,35 +17,7 @@ weight: 3
 
 ---
 
-## 2. ツールセットの活用シーン
-
-| シーン | ツールセット例 | 含まれるツール |
-|--------|----------------|----------------|
-| **コードレビュー** | `reviewer` | `#changes`, `#problems`, `#codebase`, `#usages` |
-| **デバッグ作業** | `debugger` | `#problems`, `#runTests`, `#terminalSelection`, `#testFailure` |
-| **新規開発** | `developer` | `#new`, `#editFiles`, `#runTasks`, `#openSimpleBrowser` |
-| **外部調査** | `researcher` | `#fetch`, `#githubRepo`, `#extensions`, `#VSCodeAPI` |
-
----
-
-## 3. ツールセットの作成方法
-
-### 3.1 設定画面からの作成
-
-1. **チャットビューを開く** → 右上の **「チャットの設定」** ボタンをクリック
-2. **「ツールセット」** を選択
-3. **「新しいツールセットファイル」** を選択
-4. `.toolsets.jsonc` ファイルが開かれるので、内容を編集
-
-### 3.2 コマンドパレットからの作成
-
-1. `⇧⌘P` でコマンドパレットを開く
-2. **「チャット：ツールセットの設定」** を実行
-3. ツールセットファイルが開かれる
-
----
-
-## 4. ツールセットファイルの構造
+## 2. ツールセットファイルの構造
 
 ツールセットは `.toolsets.jsonc` ファイルで定義します：
 
@@ -63,13 +35,42 @@ weight: 3
 }
 ```
 
-### 4.1 各プロパティの説明
+### 2.1 各プロパティの説明
 
 | プロパティ | 説明 | 例 |
 |------------|------|-----|
 | `tools` | 含めるツール名のリスト | `["changes", "codebase", "problems"]` |
 | `description` | ツールセットの簡単な説明 | `"コードレビュー用ツールセット"` |
-| `icon` | ツールピッカーで表示するアイコン | `"search"`, `"debug"`, `"tools"` など |
+| `icon` | ツールピッカーで表示するアイコン | `"search"`, `"debug"`, `"tools"` など ([アイコン集](https://code.visualstudio.com/api/references/icons-in-labels)) |
+
+---
+
+## 3. ツールセットの活用シーン
+
+| シーン | ツールセット例 | 含まれるツール |
+|--------|----------------|----------------|
+| **コードレビュー** | `reviewer` | `#changes`, `#problems`, `#codebase`, `#usages` |
+| **デバッグ作業** | `debugger` | `#problems`, `#runTests`, `#terminalSelection`, `#testFailure` |
+| **新規開発** | `developer` | `#new`, `#editFiles`, `#runTasks`, `#openSimpleBrowser` |
+| **外部調査** | `researcher` | `#fetch`, `#githubRepo`, `#extensions`, `#VSCodeAPI` |
+
+---
+
+## 4. ツールセットの作成方法
+
+### 4.1 設定画面からの作成
+![ツールの選択方法](../images/toolset_create.png)
+1. **チャットビューを開く** → 右上の **「歯車」** ボタンをクリック
+2. **「ツールセット」** を選択
+3. **「新しいツールセットファイル」** を選択
+4. **ファイル名を入力**（例：`my-toolset.jsonc`）
+5. `.toolsets.jsonc` ファイルが開かれるので、内容を編集
+
+### 4.2 コマンドパレットからの作成
+![ツールの選択方法](../images/toolset_create2.png)
+1. `⇧⌘P` (Mac) / `Ctrl+Shift+P` (Windows) でコマンドパレットを開く
+2. **「チャット：ツールセットの構成」** を実行
+3. ツールセットファイルが開かれる
 
 ---
 
@@ -77,21 +78,21 @@ weight: 3
 
 ### :pen: 例題
 
-デバッグ作業に特化したツールセット `debugger` を作成してみましょう。
+外部調査に特化したツールセット `researcher` を作成してみましょう。
 
 ```jsonc
 {
-  "debugger": {
+  "researcher": {
     "tools": [
-      "problems",
-      "runTests",
-      "testFailure",
-      "terminalSelection",
+      "fetch",
+      "githubRepo",
+      "extensions",
+      "vscodeAPI",
       "codebase",
-      "usages"
+      "search"
     ],
-    "description": "デバッグとテスト作業用のツールセット",
-    "icon": "debug"
+    "description": "外部情報の調査・収集用のツールセット",
+    "icon": "search"
   }
 }
 ```
@@ -101,14 +102,14 @@ weight: 3
 ツールセット作成後、チャットで以下のように使用できます：
 
 ```text
-#debugger このエラーの原因を特定して修正してください
+#researcher Next.jsの最新のスタイリング手法について調べて、当プロジェクトに適用できそうな方法を提案してください
 ```
 
-Copilot は `debugger` ツールセットに含まれるツールを使って：
-1. `#problems` でエラー情報を取得
-2. `#codebase` で関連コードを検索
-3. `#usages` で影響範囲を調査
-4. `#runTests` でテストを実行して検証
+Copilot は `researcher` ツールセットに含まれるツールを使って：
+1. `#fetch` で公式ドキュメントやブログの最新情報を取得
+2. `#githubRepo` で人気プロジェクトの実装例を検索
+3. `#codebase` で現在のプロジェクト構成を分析
+4. `#extensions` で関連するVS Code拡張機能を調査
 
 ---
 

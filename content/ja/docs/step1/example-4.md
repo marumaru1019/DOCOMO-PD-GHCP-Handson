@@ -1,10 +1,10 @@
 ---
-title: ④ Copilot カスタマイゼーション
+title: ④ Copilot のカスタム
 categories: [GitHub Copilot, Agent Mode]
 weight: 4
 ---
 
-## 1. Copilot カスタマイゼーションとは？
+## 1. Copilot のカスタム方法は？
 
 VS Code の GitHub Copilot は、**カスタム指示**や**プロンプトファイル**を使用してAIの応答をプロジェクトの要件に合わせてカスタマイズできます。毎回同じコンテキストを入力する代わりに、ファイルに保存して自動的にすべてのチャットリクエストに含めることが可能です。
 
@@ -17,7 +17,7 @@ VS Code の GitHub Copilot は、**カスタム指示**や**プロンプトフ�
 
 ---
 
-## 2. カスタマイゼーションの種類と使い分け
+## 2. カスタムの種類と使い分け
 
 VS Code では以下の3つの方法でCopilotをカスタマイズできます：
 
@@ -51,6 +51,7 @@ VS Code では以下の3つの方法でCopilotをカスタマイズできます�
 ### 3.1 カスタム指示の作成方法
 
 **手順：**
+![ツールの選択方法](../images/custom-instructions-activate.png)
 1. `github.copilot.chat.codeGeneration.useInstructionFiles` 設定を `true` に設定
 2. ワークスペースルートに `.github` フォルダを作成（存在しない場合）
 3. `.github/copilot-instructions.md` ファイルを作成
@@ -88,7 +89,7 @@ VS Code では以下の3つの方法でCopilotをカスタマイズできます�
 
 ## React
 - 関数コンポーネントのみを使用してください
-- CSS-in-JS ライブラリとして styled-components を使用してください
+- スタイルは Tailwind CSS を使用してください
 - カスタムフックでロジックを分離してください
 
 ## テスト
@@ -100,37 +101,78 @@ VS Code では以下の3つの方法でCopilotをカスタマイズできます�
 
 カスタム指示を設定後、Copilot が以下のように応答します：
 
-**ユーザー:** 「ユーザー情報を表示するコンポーネントを作成して」
+**ユーザー:** 「Todoのフィルタリング機能コンポーネントを作成して」
 
 **Copilot応答:**
 ```typescript
-// 📝 styled-componentsを使用したスタイリング
-import styled from 'styled-components';
-
 // 📝 type エイリアスを使用した型定義
-type UserInfo = {
-  id: string;
-  name: string;
-  email: string;
-};
+type TodoFilter = 'all' | 'active' | 'completed';
+
+interface TodoFilterProps {
+  currentFilter: TodoFilter;
+  onFilterChange: (filter: TodoFilter) => void;
+  activeTodosCount: number;
+  completedTodosCount: number;
+  onClearCompleted: () => void;
+}
 
 // 📝 関数コンポーネントとして実装
-const UserProfile: React.FC<{ user: UserInfo }> = ({ user }) => {
+const TodoFilterComponent: React.FC<TodoFilterProps> = ({
+  currentFilter,
+  onFilterChange,
+  activeTodosCount,
+  completedTodosCount,
+  onClearCompleted
+}) => {
+  const filters: { key: TodoFilter; label: string }[] = [
+    { key: 'all', label: 'すべて' },
+    { key: 'active', label: 'アクティブ' },
+    { key: 'completed', label: '完了済み' },
+  ];
+
   return (
-    <Container>
-      <Name>{user.name}</Name>
-      <Email>{user.email}</Email>
-    </Container>
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+        {filters.map(({ key, label }) => (
+          <button
+            key={key}
+            onClick={() => onFilterChange(key)}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              currentFilter === key
+                ? 'bg-white dark:bg-gray-600 text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            {label}
+            {key === 'active' && activeTodosCount > 0 && (
+              <span className="ml-1 px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs">
+                {activeTodosCount}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 };
-
-// 📝 styled-componentsでスタイリング
-const Container = styled.div`
-  padding: 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-`;
 ```
+
+> **💡 Tips: カスタム指示の自動生成**
+>
+> VS Code の新機能として、**`チャット: ワークスペース指示ファイルを生成する`** コマンドが利用できます。このコマンドは、既存のコードベースを分析して、プロジェクトに最適化されたカスタム指示を自動生成します。
+>
+> **使用方法:**
+> - **コマンドパレット**から `チャット: ワークスペース指示ファイルを生成する` を実行
+> ![Instructionsの作成](../images/generate-custom.png)
+> - または **チャットビュー**の「歯車アイコン」→「指示の生成」を実行
+> ![Instructionsの作成2](../images/generate-custom2.png)
+>
+> **機能:**
+> - プロジェクトの構造、技術スタック、コーディングパターンを分析
+> - `.github/copilot-instructions.md` ファイルを自動作成
+> - 既存の指示ファイルがある場合は改善提案を生成
+>
+> 生成された指示は、チームの特定のニーズに合わせてカスタマイズできます。
 
 ---
 
@@ -139,12 +181,14 @@ const Container = styled.div`
 ### 4.1 作成方法
 
 **手順：**
-1. **コマンドパレット**から `Chat: New Instructions File` を実行
-2. または **チャットビュー**の「Configure Chat」→「Instructions」→「New instruction file」
-3. 保存場所を選択：
+1. **コマンドパレット**から `チャット: 手順の構成` を実行
+![Instructionsの作成](../images/instruction-create.png)
+1. または **チャットビュー**の「歯車アイコン」→「指示」→「新しい命令ファイル」
+![Instructionsの作成2](../images/instruction-create2.png)
+1. 保存場所を選択：
    - **Workspace**: `.github/instructions/` フォルダ（ワークスペース固有）
    - **User profile**: ユーザープロファイル（複数ワークスペース共通）
-4. ファイル名を入力（例：`typescript.instructions.md`）
+2. ファイル名を入力（例：`typescript.instructions.md`）
 
 ### 4.2 ファイル構造
 
@@ -182,6 +226,13 @@ applyTo: "**/*.ts,**/*.tsx"
   - `description`: 指示ファイルの説明
   - `applyTo`: 自動適用するファイルのglobパターン
 - **本文**: Markdown形式の指示内容
+
+### 4.2 Front Matter の設定項目
+
+| 項目 | 説明 | 例 |
+|------|------|-----|
+| `description` | 指示ファイルの説明文 | `"TypeScript専用のコーディング指示"` |
+| `applyTo` | 自動適用するファイルのglobパターン | `"**/*.ts,**/*.tsx"` |
 
 ### 4.3 実践的な使い方
 
@@ -239,8 +290,10 @@ applyTo: "**/api/**/*.ts,**/server/**/*.ts"
 ### 5.1 作成方法
 
 **手順：**
-1. **コマンドパレット**から `Chat: New Prompt File` を実行
-2. または **チャットビュー**の「Configure Chat」→「Prompt Files」→「New prompt file」
+1. **コマンドパレット**から `チャット: プロンプトファイルの構成` を実行
+![Promptsの作成](../images/prompt-create.png)
+2. または **チャットビュー**の「歯車アイコン」→「プロンプト」→「新しいプロンプトファイル」
+![Promptsの作成](../images/prompt-create2.png)
 3. 保存場所を選択：
    - **Workspace**: `.github/prompts/` フォルダ（ワークスペース固有）
    - **User profile**: ユーザープロファイル（複数ワークスペース共通）
@@ -276,9 +329,6 @@ ${input:componentName:コンポーネント名} コンポーネントを作成�
 - TypeScript対応
 - styled-components使用
 - テストファイルも生成
-
-## 参考
-[coding-guidelines](../copilot-instructions.md)
 ```
 
 **構造要素：**
@@ -288,6 +338,15 @@ ${input:componentName:コンポーネント名} コンポーネントを作成�
   - `description`: プロンプトの説明
   - `tools`: エージェントモードで使用可能なツール
 - **本文**: プロンプト内容（変数、他ファイル参照可能）
+
+### 5.2 Front Matter の設定項目
+
+| 項目 | 説明 | 例 |
+|------|------|-----|
+| `mode` | チャットモード | `"agent"`, `"ask"`, `"edit"` |
+| `model` | 使用するAIモデル | `"gpt-4"`, `"Claude Sonnet 4"` |
+| `description` | プロンプトの説明文 | `"Reactコンポーネント生成プロンプト"` |
+| `tools` | 使用可能なツール・ツールセット | `["editFiles", "runTests"]` |
 
 ### 5.3 実践的な使い方
 
@@ -317,9 +376,6 @@ ${input:componentName:コンポーネント名} という名前でReactコンポ
 - `${componentName}.tsx` - メインコンポーネント
 - `${componentName}.test.tsx` - テストファイル
 - `index.ts` - エクスポート用
-
-## 参考指示
-[TypeScript指示](../instructions/typescript.instructions.md)
 ```
 
 **2. APIレビュープロンプト（`api-review.prompt.md`）:**

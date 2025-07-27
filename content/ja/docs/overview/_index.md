@@ -91,9 +91,7 @@ GitHub Copilotが正常に動作するか確認しましょう：
    - Enterキーを押して送信
    - Copilotからコードが返答されることを確認
 
-```javascript
-// 期待される回答例
-console.log("Hello World");
-```
+![チャット動作テスト](./images/chat.png)
+
 
 ---
