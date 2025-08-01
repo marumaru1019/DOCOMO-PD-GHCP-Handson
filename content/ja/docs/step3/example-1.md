@@ -93,7 +93,7 @@ Ran all test suites.
 1. **現在のカバレッジ状況を把握**
    ```bash
    # カバレッジレポート生成
-   npm run test:coverage
+   npm test -- --coverage
 
    # HTMLレポートでの詳細確認
    open coverage/lcov-report/index.html
@@ -108,7 +108,7 @@ Ran all test suites.
 1. **ターミナル結果をCopilotに分析依頼**
    ```bash
    # カバレッジレポートを実行
-   npm run test:coverage
+   npm test -- --coverage
 
    # 結果をターミナルで選択（ドラッグで範囲選択）
    # その後、以下のプロンプトでCopilotチャットに依頼
@@ -149,9 +149,9 @@ Ran all test suites.
    - エッジケースのテスト
    ```
 
-3. **進捗確認（5回実装ごと）**
+3. **進捗確認**
    ```bash
-   npm run test:coverage
+   npm test -- --coverage
    ```
 
 #### Step 4: 最終確認
@@ -173,7 +173,7 @@ npm test -- --coverage --coverageThreshold='{"global":{"branches":80,"functions"
 **1. 現状把握**
 ```bash
 # カバレッジレポート生成
-npm run test:coverage
+npm test -- --coverage
 
 # HTMLレポートでの詳細確認
 open coverage/lcov-report/index.html
@@ -185,7 +185,7 @@ open coverage/lcov-report/index.html
 
 ```bash
 # カバレッジレポートを実行
-npm run test:coverage
+npm test -- --coverage
 
 # 結果をターミナルで選択（ドラッグで範囲選択）
 # その後、以下のプロンプトでCopilotチャットに依頼
