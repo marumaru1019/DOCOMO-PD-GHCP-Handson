@@ -50,7 +50,6 @@ GitHub Copilot のコードレビューは、PR や IDE 上の変更に対して
 
    ![SC-Code-Review-Button](../images/sc-code-review-button.png)
 3. 解析が完了すると、**コメント一覧**や**ファイルごとの指摘**が表示されるので、必要に応じて**提案を適用**する。
-   ![SC-Comments-Panel](../images/sc-comments-panel.png)
 
 
 ---

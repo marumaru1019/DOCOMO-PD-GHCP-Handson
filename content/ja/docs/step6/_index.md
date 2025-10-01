@@ -6,6 +6,7 @@ weight: 7
 本ワークショップの内容をさらに深く知るための情報をまとめました。
 
 + [GitHub Copilot のドキュメント](https://docs.github.com/en/copilot)
++ [エージェントモードの振る舞い](https://github.blog/ai-and-ml/github-copilot/agent-mode-101-all-about-github-copilots-powerful-mode/)
 + [Copilot Chat クックブック](https://docs.github.com/ja/copilot/tutorials/copilot-chat-cookbook)
 + [GitHub Copilot のチートシート](https://code.visualstudio.com/docs/copilot/reference/copilot-vscode-features)
 + [VS Code の アップデート情報](https://code.visualstudio.com/updates)

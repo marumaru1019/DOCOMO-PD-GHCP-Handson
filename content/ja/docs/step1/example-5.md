@@ -42,6 +42,72 @@ GitHub Pull Requests` と送信しましょう)
 3. 作成前に差分タブやチェックを確認してから **Create**。
    ![Generated-PR-Description](../images/generated-pr-description.png)
 
+---
+### :bulb: Tips：コミット/PR文の生成文章に振る舞いをもたせる
+
+GitHub Copilot は、コミットメッセージやプルリクエスト（PR）の説明文を自動生成できますが、`.vscode/settings.json` で独自の指示（Instructions）を設定することで、生成される文章の形式やスタイルをカスタマイズできます。
+
+#### 設定方法
+
+**`.vscode/settings.json`** に以下のような設定を追加します：
+
+```json
+{
+  // コミットメッセージ生成のための指示
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "file": ".github/message/commit-message-instructions.md"
+    }
+  ],
+  // プルリクエスト説明生成のための指示
+  "github.copilot.chat.pullRequestDescriptionGeneration.instructions": [
+    {
+      "file": ".github/message/pr-description-instructions.md"
+    }
+  ]
+}
+```
+
+#### 設定の詳細
+
+**コミットメッセージ生成の指示設定**
+- **設定項目**: `github.copilot.chat.commitMessageGeneration.instructions`
+- **指定方法**:
+  - ワークスペース内のファイル: `{ "file": "fileName" }`
+  - 自然言語のテキスト: `{ "text": "Use conventional commit message format." }`
+
+**プルリクエスト説明生成の指示設定**
+- **設定項目**: `github.copilot.chat.pullRequestDescriptionGeneration.instructions`
+- **指定方法**:
+  - ワークスペース内のファイル: `{ "file": "fileName" }`
+  - 自然言語のテキスト: `{ "text": "Always include a list of key changes." }`
+
+#### 指示ファイルの例
+
+**`.github/message/commit-message-instructions.md`**
+```markdown
+# コミットメッセージの生成ルール
+
+- Conventional Commits 形式を使用する（例: `feat:`, `fix:`, `docs:`）
+- 日本語で記述する
+- 変更の理由を簡潔に説明する
+- 50文字以内の要約を最初に記述する
+```
+
+**`.github/message/pr-description-instructions.md`**
+```markdown
+# プルリクエスト説明の生成ルール
+
+- 変更の目的を明記する
+- 主要な変更点をリストアップする
+- 影響範囲を記載する
+- テスト方法や確認項目を含める
+- 関連するIssue番号を参照する
+```
+
+> **注意**: コードレビュー時のルールは安定しないことがしばしばあります。
+
+---で、短い記述だけでコード修正・ドキュメント追加・テスト生成などを効率的に指示できます。ここでは、それぞれの概要や活用方法を示し、最後に複数のショートカットを組み合わせて使う方法も紹介します。
 
 ---
 
