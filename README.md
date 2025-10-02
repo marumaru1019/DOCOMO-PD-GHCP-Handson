@@ -22,13 +22,13 @@
 
 Azure ポータルにログイン後、上部の検索バーに「静的 Web アプリ」と入力して検索します。
 
-![静的 Web アプリの検索](https://github.com/user-attachments/assets/a9b998dd-10e3-4f7b-8c6d-23a0fef4c652)
+![静的 Web アプリの検索](./images/static-web-app-search.png)
 
 ### ② 新しい Static Web Apps の作成
 
 「静的 Web アプリ」を選択した後、表示されたページで「作成」ボタンをクリックします。
 
-![新規作成ボタン](https://github.com/user-attachments/assets/224c6712-1370-43cb-bcba-74d98f90693b)
+![新規作成ボタン](./images/create-button.png)
 
 ### ③ 必要な情報を入力
 
@@ -42,7 +42,7 @@ Azure ポータルにログイン後、上部の検索バーに「静的 Web ア
 | デプロイ認可ポリシー           | デプロイトークン   |
 | Azure Functionsとステージングの詳細 | 任意   |
 
-![情報入力の例](https://github.com/user-attachments/assets/12e7ef88-463b-4d96-9316-dd9119133317)
+![情報入力の例](./images/create-form.png)
 
 作成完了まで数分かかります。
 
@@ -89,7 +89,7 @@ Azure ポータルで作成済みの Static Web Apps を選択し、「デプロ
 
 表示されたデプロイトークンをコピーしてください。
 
-![デプロイトークンの取得](https://github.com/user-attachments/assets/aca88b7e-d9c8-439c-952e-7aa83e3944d5)
+![デプロイトークンの取得](./images/deployment-token.png)
 
 ### ⑤ デプロイの実施
 
@@ -107,8 +107,6 @@ Deploying project to Azure Static Web Apps...
 ```
 
 表示されたURLにブラウザからアクセスし、ページが表示されればデプロイ成功です。
-
-![デプロイ成功時の画面](https://github.com/user-attachments/assets/6d734e3a-32ac-4b13-9c74-03472ab020ec)
 
 ---
 
@@ -130,7 +128,6 @@ npm run serve
 
 ブラウザで `http://localhost:1313/` にアクセスし、ページが表示されれば成功です。
 
-![ローカル起動時の画面](https://github.com/user-attachments/assets/6d734e3a-32ac-4b13-9c74-03472ab020ec)
 
 ---
 
