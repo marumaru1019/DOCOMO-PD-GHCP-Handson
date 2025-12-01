@@ -1,248 +1,264 @@
 ---
-title: ⑤ カスタムチャットモード
-categories: [GitHub Copilot, Agent Mode]
-weight: 5
+title: ⑥ Awesome Copilot コミュニティリソース
+categories: [GitHub Copilot, 業務利活用]
+tags: [github-copilot, awesome-copilot, community, リソース]
+weight: 6
 ---
 
-## 1. カスタムチャットモードとは？
+## 1. Awesome Copilot とは？
 
-カスタムチャットモードは、特定の作業に最適化された**指示とツールの組み合わせ**を事前定義し、素早く切り替えられる機能です。例えば「計画立案モード」では実装プランの生成に特化し、読み取り専用ツールのみを使用するといった設定が可能です。
+GitHub公式の**awesome-copilot**リポジトリは、コミュニティが貢献する**100以上のカスタマイズリソース**を集約したコレクションです。VS Code 1.102以降では、これらのリソースを**リンクから直接インポート**して即座に利用できます。
 
 > **ポイント**
 >
-> * **専用設定** … 特定タスクに最適化されたツールと指示の組み合わせ
-> * **素早い切り替え** … チャットモードドロップダウンから瞬時に変更
-> * **再利用可能** … ワークスペースまたはユーザープロファイルに保存
-> * **チーム共有** … `.chatmode.md` ファイルでチーム全体の標準化
+> * **コミュニティ貢献** … 実際の開発現場で使用されている実践的な設定
+> * **ワンクリックインポート** … VS Codeリンクから瞬時に設定を導入
+> * **技術別カテゴリ** … Angular、React、Python、Azure等の専門分野別
+> * **継続更新** … 新しい技術やベストプラクティスが随時追加
 
 ---
 
-## 2. カスタムチャットモードの活用シーン
+## 2. リソースの3つのカテゴリ
 
-| モード例 | 目的 | 含まれるツール | 指示内容 |
-|----------|------|----------------|----------|
-| **Plan** | 実装計画立案 | `codebase`, `search`, `usages` | コード編集せず、計画のみ生成 |
-| **Review** | コードレビュー | `changes`, `problems`, `codebase` | セキュリティと品質に重点 |
-| **Debug** | デバッグ支援 | `problems`, `runTests`, `terminalSelection` | エラー解析と修正提案 |
-| **Document** | ドキュメント作成 | `codebase`, `fetch`, `githubRepo` | README、API仕様書生成 |
+### 2.1 📋 カスタム指示（Custom Instructions）- 50以上
+
+**技術別開発ガイドライン**
+
+| 分野 | 指示名 | 説明 |
+|------|--------|------|
+| **フロントエンド** | Next.js + Tailwind Development Instructions | Next.js + Tailwindの開発標準と指示 |
+| **フロントエンド** | ReactJS Development Instructions | ReactJSの開発標準とベストプラクティス |
+| **フロントエンド** | Angular Development Instructions | Angular固有のコーディング標準とベストプラクティス |
+| **フロントエンド** | VueJS 3 Development Instructions | VueJS 3の開発標準とベストプラクティス（Composition API とTypeScript） |
+| **バックエンド** | Spring Boot Development | Spring Bootベースアプリケーション構築のガイドライン |
+| **バックエンド** | ASP.NET REST API Development | ASP.NETでREST API構築のガイドライン |
+| **クラウド** | Azure Functions Typescript | Azure Functions向けTypeScriptパターン |
+| **インフラ** | Kubernetes Deployment Best Practices | Kubernetesでのアプリケーション展開と管理の包括的ベストプラクティス |
+
+**品質・セキュリティ重視の指示**
+
+| 分野 | 指示名 | 説明 |
+|------|--------|------|
+| **セキュリティ** | Secure Coding and OWASP Guidelines | OWASP Top 10と業界ベストプラクティスに基づく包括的なセキュアコーディング指示 |
+| **パフォーマンス** | Performance Optimization Best Practices | 最も包括的で実用的なパフォーマンス最適化指示（全言語・フレームワーク・スタック対応） |
+| **DevOps** | GitHub Actions CI/CD Best Practices | GitHub Actionsを使った堅牢で安全で効率的なCI/CDパイプライン構築の包括ガイド |
+
+### 2.2 🎯 再利用可能プロンプト（Reusable Prompts）- 30以上
+
+**プロジェクト管理・設計**
+
+| 分野 | プロンプト名 | 説明 |
+|------|-------------|------|
+| **設計** | Create Implementation Plan | 新機能、既存コードリファクタリング、パッケージ更新、設計、アーキテクチャ、インフラの実装計画ファイルを作成 |
+| **設計** | Create Architectural Decision Record | AI最適化された意思決定文書のためのアーキテクチャ決定記録（ADR）文書を作成 |
+| **設計** | Create Specification | Generative AI向けに最適化されたソリューションの新規仕様ファイルを作成 |
+| **分析** | Comprehensive Project Architecture Blueprint Generator | コードベースを分析して詳細なアーキテクチャ文書を作成する包括的プロジェクトアーキテクチャブループリント生成 |
+
+**コード品質向上**
+
+| 分野 | プロンプト名 | 説明 |
+|------|-------------|------|
+| **品質** | Review And Refactor | 定義された指示に従ってプロジェクトのコードをレビューしリファクタリング |
+| **.NET** | C# Documentation Best Practices | C#の型がXMLコメントで文書化され、文書化のベストプラクティスに従うことを保証 |
+| **DB** | SQL Performance Optimization Assistant | 包括的なクエリチューニング、インデックス戦略、全SQLデータベースのパフォーマンス分析のためのユニバーサルSQL最適化アシスタント |
+
+### 2.3 🧩 カスタムエージェント（Custom Agents）- 20以上
+
+**技術特化エージェント**
+
+| 分野 | エージェント名 | 説明 |
+|------|----------|------|
+| **Azure** | Azure Principal Architect mode instructions | Azure Well-Architected Frameworkの原則とMicrosoftベストプラクティスを使用した専門的なAzure Principal Architectガイダンスを提供 |
+| **React** | Expert React Frontend Engineer Mode Instructions | モダンなTypeScriptとデザインパターンを使用した専門的なReactフロントエンドエンジニアリングガイダンスを提供 |
+| **DB** | PostgreSQL Database Administrator | PostgreSQL拡張機能を使ってPostgreSQLデータベースで作業 |
+
+**作業フロー特化エージェント**
+
+| 分野 | エージェント名 | 説明 |
+|------|----------|------|
+| **設計** | Plan Mode - Strategic Planning & Architecture Assistant | 実装前の思慮深い分析に焦点を当てた戦略的計画およびアーキテクチャアシスタント |
+| **デバッグ** | Debug Mode Instructions | アプリケーションをデバッグしてバグを見つけて修正 |
+| **検証** | Critical thinking mode instructions | 最良の解決策と結果を確保するための前提に挑戦し批判的思考を促進 |
 
 ---
 
-## 3. チャットモードファイルの構造
-
-### 3.1 基本構造
-
-チャットモードファイル（`.chatmode.md`）は以下の構造を持ちます：
-
-```markdown
----
-description: "モードの簡単な説明（チャット入力欄に表示）"
-tools: ['tool1', 'tool2', 'toolset1']
-model: "Claude Sonnet 4"
----
-
-# モード固有の指示
-
-ここにそのモードでの具体的な指示や
-ガイドラインを記述します。
-```
-
-### 3.2 Front Matter の設定項目
-
-| 項目 | 説明 | 例 |
-|------|------|-----|
-| `description` | モードの説明文 | `"実装計画を生成するモード"` |
-| `tools` | 使用可能なツール・ツールセット | `['codebase', 'search', 'usages']` |
-| `model` | 使用するAIモデル | `"Claude Sonnet 4"` |
-
----
-
-## 4. 具体的なチャットモード例
+## 3. インポート方法
 
 ### :pen: 例題
 
-「計画立案モード」を作成してみましょう。
+コミュニティの設定を実際にインポートして活用してみましょう。
 
-```markdown
----
-description: "新機能やリファクタリングの実装計画を生成"
-tools: ['codebase', 'fetch', 'findTestFiles', 'githubRepo', 'search', 'usages']
-model: "Claude Sonnet 4"
----
+以下のステップでawesome-copilotリソースを試してみてください：
 
-# 計画立案モードの指示
+1. [awesome-copilot](https://github.com/github/awesome-copilot?tab=readme-ov-file)のカスタムエージェントの一覧より「Plan Mode - Strategic Planning & Architecture Assistant」を見つけ、「VS Code Install」をクリック
 
-あなたは計画立案モードです。新機能の実装やコードのリファクタリングの計画を生成することが主な役割です。
+2. VS Code を開くか確認が求められるので、開くを押して VS Code を開く
 
-**重要**: コードの編集は行わず、計画のみを生成してください。
+3. 「Plan Mode」がインポートされたら、エージェントを「Plan」に切り替え
 
-## 計画の構成
-
-生成する計画は以下のセクションを含むMarkdown文書としてください：
-
-* **概要**: 機能やリファクタリングタスクの簡潔な説明
-* **要件**: 機能やリファクタリングの要件リスト
-* **実装手順**: 詳細な実装ステップ
-* **テスト**: 検証に必要なテストの一覧
-* **リスク**: 想定される課題や注意点
-```
+4. 以下のプロンプトを試してみる：
+   「GHCP-TodoAppにタグ機能（複数選択可能）を追加する実装計画を作成してください」
 
 ### :robot: 出力例
 
-計画立案モードを使用すると、Copilot は以下のような応答をします：
+Plan Modeをインポートした後、Copilotは以下のような詳細な実装計画を生成します：
 
-**ユーザー:** 「ユーザー認証機能を追加したい」
-
-**Copilot応答:**
 ```markdown
-# ユーザー認証機能 実装計画
+# タグ機能追加 実装計画
 
 ## 概要
-セキュアなユーザー認証システムを既存のWebアプリケーションに追加します。
+GHCP-TodoAppに複数選択可能なタグ機能を追加し、タスクの分類・フィルタリングを実現
 
 ## 要件
-- JWT トークンベースの認証
-- ログイン・ログアウト機能
-- パスワード暗号化（bcrypt）
-- セッション管理
+- 各Todoアイテムに複数のタグを付与可能
+- タグの作成・削除・編集機能
+- タグによるフィルタリング機能
+- 色分け表示でタグを視覚的に区別
 
 ## 実装手順
-1. 認証ミドルウェアの作成
-2. ユーザーモデルの設計
-3. ログイン・ログアウトエンドポイント
-4. フロントエンド認証フォーム
-5. 保護されたルートの実装
+1. **型定義の拡張** (`src/types/shared/todo.ts`)
+   - Tag型の追加（id, name, color）
+   - Todo型にtagsプロパティ追加
 
-## テスト
-- 認証フローのユニットテスト
-- APIエンドポイントの統合テスト
-- セキュリティテスト
+2. **タグ管理機能** (`src/components/tags/`)
+   - TagManager.tsx: タグ作成・編集
+   - TagSelector.tsx: タグ選択UI
+   - TagFilter.tsx: フィルタリング機能
 
-## リスク
-- セッション管理の複雑性
-- XSS/CSRF 攻撃への対策が必要
+3. **既存コンポーネントの更新**
+   - TodoItem.tsx: タグ表示機能
+   - TodoApp.tsx: タグ関連状態管理
+   - TodoFilter.tsx: タグフィルターの統合
+
+## データ設計
+- localStorage: 'tags'キーでタグ一覧を保存
+- Todoオブジェクト: tagIds配列でタグとの関連を管理
+
+## UI/UX考慮点
+- タグ選択時のマルチセレクト対応
+- 色管理の直感的なインターフェース
+- タグ数が多い場合の表示最適化
 ```
 
 ---
 
-## 5. チャットモードの作成と管理
+## 4. すぐに取り入れられるリソース
 
-### 5.1 新規作成手順
+### 4.1 Beast Mode (VS Code v1.102)
 
-1. **コマンドパレット** → `Chat: New Mode File`
-![チャットモードの作成](../images/chat-create.png)
-1. **保存場所を選択**:
-   - **Workspace**: `.github/chatmodes/` フォルダ（チーム共有）
-   - **User Profile**: 個人設定（複数ワークスペースで使用）
-2. **モード名を入力** （チャットモードドロップダウンに表示される名前）
-3. **ファイル内容を編集** （Front Matter + 指示内容）
+**Beast Mode**は、awesome-copilotの中でも特に人気の高いカスタムエージェントで、GPT-4.1を最高レベルのコーディングエージェントとして活用できます。
 
-### 5.2 既存モードの管理
+### :pen: 例題
 
-**チャットビューから管理:**
-1. **チャットビュー** → **設定ボタン** → **Modes**
-2. **既存モードを選択** して編集
-3. **アクション**: コピー・移動・名前変更・削除
+Beast Modeを実際にインポートして、高度なコーディング支援を体験してみましょう。
 
-**コマンドパレットから:**
-- `Chat: Configure Chat Modes` → モード選択 → 編集
+以下のステップでBeast Modeを試してみてください：
 
----
+1. [awesome-copilot](https://github.com/github/awesome-copilot?tab=readme-ov-file)のカスタムエージェントの一覧より「4.1 Beast Mode」を見つけ、「VS Code Install」をクリック
 
-## 6. 実践的な活用パターン
+2. VS Code を開くか確認が求められるので、開くを押して VS Code を開く
 
-### 6.1 プロジェクト固有モード
+3. 「4.1 Beast Mode」がインポートされたら、エージェントを「4.1 Beast Mode」に切り替え
 
-```markdown
----
-description: "API開発専用モード"
-tools: ['editFiles', 'runTests', 'fetch', 'problems']
----
+4. 以下のプロンプトを試してみる：
+   「GHCP-TodoAppにダークモード機能を追加してください」
 
-# API開発モード
+### :robot: 出力例
 
-REST APIの開発に特化したモードです。
+Beast Modeをインポートした後、Copilotは以下のような包括的な実装コードを生成します：
 
-## 開発指針
-- OpenAPI仕様に準拠
-- エラーハンドリングを必須実装
-- レスポンス形式を統一
-- 適切なHTTPステータスコード使用
+```typescript
+// 📝 ダークモード機能の実装
+
+// 1. テーマ管理の型定義 (src/types/theme.ts)
+type Theme = 'light' | 'dark';
+
+interface ThemeContextType {
+  theme: Theme;
+  toggleTheme: () => void;
+}
+
+// 2. テーマコンテキスト (src/contexts/ThemeContext.tsx)
+import { createContext, useContext, useState, useEffect } from 'react';
+
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // 📦 ローカルストレージからテーマを復元
+  const [theme, setTheme] = useState<Theme>('light');
+
+  // 🔄 テーマ切り替え関数
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
+  // 📝 HTMLのdata属性でテーマを設定
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
+// 3. テーマ切り替えボタン (src/components/ThemeToggle.tsx)
+export const ThemeToggle: React.FC = () => {
+  const { theme, toggleTheme } = useTheme();
+
+  return (
+    <button
+      onClick={toggleTheme}
+      className="p-2 rounded-lg transition-colors
+                 bg-gray-200 dark:bg-gray-700
+                 text-gray-800 dark:text-gray-200"
+    >
+      {theme === 'light' ? '🌙' : '☀️'}
+    </button>
+  );
+};
+
+// 4. Tailwind CSS設定更新 (tailwind.config.ts)
+module.exports = {
+  darkMode: ['selector', '[data-theme="dark"]'],
+  // 🎨 ダークモード対応のクラス追加
+};
 ```
 
-### 6.2 チーム標準モード
-
-```bash
-# プロジェクト構造例
-.github/
-└── chatmodes/
-    ├── plan.chatmode.md      # 計画立案
-    ├── review.chatmode.md    # コードレビュー
-    ├── debug.chatmode.md     # デバッグ支援
-    └── document.chatmode.md  # ドキュメント作成
-```
 
 ---
 
-## 7. 他のカスタマイズ手段との使い分け
+### :memo: 練習
 
-ここでは「インストラクションファイル」「プロンプトファイル」「カスタムチャットモード」の3つに絞って役割を整理します。
+1. **Beast Modeの基本体験**
+   - Beast Modeをインポートして簡単なタスクから試す
+   - 通常モードとの違いを比較してみる
 
-| 手段 | 主目的 / 作用範囲 | 定義する内容 | 適用タイミング | ツール制御 | 主なユースケース |
-|------|------------------|--------------|----------------|------------|------------------|
-| **インストラクションファイル** (`*.instructions.md`) | プロジェクト/組織全体の恒常的背景 | 行動原則 / スタイル / レビュー観点 | すべての発話に常時マージ | 不可 | コーディング規約注入 / 品質観点共有 |
-| **プロンプトファイル** (`*.prompt.md`) | 再利用したい具体的要求の雛形 | 質問テンプレ / ドキュメント骨子 | 必要時に手動挿入 | 不可 | 定型ドキュメント生成 / 繰り返し質問 |
-| **カスタムチャットモード** (`*.chatmode.md`) | タスク特化の作業コンテキスト | 指示本文 + 利用可能ツール集合 (+任意でモデル) | モード選択時 | 可能 (`tools` 指定) | 計画立案 / レビュー / リサーチ / ドキュメント作成 |
+2. **複雑な機能実装**
+   - 「リアルタイム通知システムを実装」
+   - 「データベース最適化とキャッシュ戦略を設計」
+   - 「マイクロサービス間通信を設計・実装」
 
-### 7.1 使い分けの指針（最短まとめ）
+3. **品質重視の開発**
+   - セキュリティ監査付きの機能実装
+   - パフォーマンステスト付きの最適化
+   - アクセシビリティ対応込みのUI実装
 
-| 判断の観点 | 最適 | 説明 |
-|-------------|------|------|
-| 常に効かせたい原則か | インストラクション | 全モードで自動適用したい長期ルール |
-| その場で一回きり/数回貼るだけか | プロンプト | 都度プロンプトとして貼るだけで十分 |
-| 指示とツール構成を一括で再現したいか | モード | 選択だけで環境と指示を切替えたい場合 |
+4. **チーム導入の検討**
+   - Beast Modeで作成されたコードの品質を評価
+   - プロジェクトの技術レベル向上効果を測定
 
-### 7.2 カスタムチャットモードを選ぶチェックリスト
-
-以下で 2 つ以上 YES ならモード化を検討:
-
-- 複数回/複数人が同じタスクフローを繰り返す
-- 特定のツール群だけを安全に限定したい
-- 応答スタイル（観点/出力フォーマット）の一貫性が重要
-- タスク開始時に毎回長い指示を貼る手間を減らしたい
-
-### 7.3 代表パターン
-
-| 目的 | 推奨構成 | 補足 |
-|------|----------|------|
-| 新機能の実装計画 | Plan モード + インストラクション | 背景原則はインストラクション、手順生成はモード |
-| セキュリティレビュー | Review モード + セキュリティ観点インストラクション | モードでツールを `changes`/`codebase` 等に限定 |
-| 調査 (リサーチ) | Research モード | 読み取り系ツールのみ指定で安全性確保 |
-| 定型レポート生成 | プロンプト + インストラクション | モード不要、テンプレ貼付で十分 |
-| 規約の全体浸透 | インストラクション | モード依存させない |
-
-### 7.4 最低限の判断フロー
-
-1. それは長期普遍の原則か → はい: インストラクション
-2. 単発/散発利用のテンプレか → はい: プロンプト
-3. 指示 + ツール制限をワンタップで再現したいか → はい: カスタムチャットモード
-4. それ以外: 状況により最も近いものを選択
-
-> 補足: カスタムチャットモードは「恒常的背景(インストラクション)」と「一回限りの具体要求(プロンプト)」を橋渡しする中間レイヤーです。
+> **💡 コツ**: Beast Modeは高度なタスクほど真価を発揮します。簡単なタスクより、複雑で包括的な要求を投げかけることで、その能力を最大限活用できます。
 
 ---
 
-## 8. :memo: 練習
+## 5. まとめ
 
-1. **基本モード**: 自分の作業スタイルに合った基本的なチャットモードを作成してください
-2. **専門モード**: 特定の技術スタック（React、Node.js等）に特化したモードを作成してください
-3. **チームモード**: プロジェクトチーム向けの標準的なモードを設計してください
-
----
-
-## 9. まとめ
-
-* **カスタムチャットモード** で特定タスクに最適化された環境を瞬時に構築
-* **`.chatmode.md`** ファイルで指示とツールの組み合わせを定義
-* **チーム共有** でプロジェクト全体の作業効率を向上
-* **段階的活用** で徐々にモードを拡充し、開発ワークフローを最適化
+* **awesome-copilot**は実践的なコミュニティリソースを100以上提供
+* **ワンクリックインポート**で即座に高品質な開発環境を構築可能
+* **技術別・用途別**の豊富な選択肢で、あらゆる開発シーンに対応
+* **Beast Mode**などの高度なリソースで企業レベルの開発フローを実現
+* **継続的な更新**により、最新の技術トレンドとベストプラクティスを活用可能

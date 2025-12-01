@@ -127,25 +127,66 @@ Agent mode では、使用するツールを制御できます。
 
 MCP（Model Context Protocol）は、**AIと外部システム（API/DB/ファイル/クラウド等）を安全に接続するための標準プロトコル**です。VS Code の Copilot Chat に MCP サーバーを追加すると、そのサーバーが提供する"ツール"が **Tool Picker** に現れ、Agent mode から呼び出せます。
 
-### 6.2 導入メリット
-
+**導入メリット:**
 * **手作業のコマンド/API呼び出しを会話化**（例：GitHubやAzure操作）
 * **再利用・持ち運びが効く**：MCPはクライアント非依存（VS Code/JetBrains/Visual Studio 等）で同じサーバーを使い回せる
 * **構成の見える化**：`mcp.json` で「どのツールを使って良いか」を明文化し、リポジトリに同梱可能
 
-### 6.3 ソース
-[公式サンプル集](https://github.com/modelcontextprotocol/servers/tree/main) に、どんな MCP サーバーが使えるのかの一覧が記載しているので御覧ください。
+### 6.2 MCPサーバーのインストール方法
 
-### :pen: 例題：Azure MCP ServerでBicepテンプレート作成
+MCPサーバーをインストールする方法は3つあります。
 
-**目的：** Storage AccountのBicepテンプレートを最新のAPI仕様で作成したい
+#### 方法1: VS Code 拡張機能からインストール
 
-**手順：**
+**手順:**
+1. 拡張機能ビュー（⇧⌘X / Ctrl+Shift+X）を開く
+2. MCP サーバー名を検索（例：「Azure MCP」「GitHub MCP」）
+3. 「Install」ボタンをクリック
+
+![MCP 拡張機能](../images/mcp-extension.png)
+
+#### 方法2: MCP Marketplace からインストール（プレビュー機能）
+
+> **Note**: 設定で `chat.mcp.gallery.enabled` を `true` に設定する必要があります。
+
+**手順:**
+1. 拡張機能ビュー（⇧⌘X / Ctrl+Shift+X）を開く
+2. 検索ボックスに `@mcp` と入力
+3. 必要な MCP サーバーを選択してインストール
+
+![MCP Marketplace](../images/mcp-marketplace.png)
+
+#### 方法3: 手動で mcp.json を編集
+
+`.vscode/mcp.json` ファイルを直接編集する方法です。
+
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allowed/directory"]
+    }
+  }
+}
+```
+
+> **💡 Tips**: [公式サンプル集](https://github.com/modelcontextprotocol/servers/tree/main)に、様々な MCP サーバーの一覧と設定方法が記載されています。
+
+### 6.3 例題 - Azure MCP ServerでBicepテンプレート作成
+
+**目的:** Storage AccountのBicepテンプレートを最新のAPI仕様で作成したい
+
+**手順:**
 
 1. [拡張機能のリンク](vscode:extension/ms-azuretools.vscode-azure-mcp-server) を開いてインストール
    ![Azure MCP Server 拡張機能](../images/azuremcp.png)
 
-2. **Copilot Chat → Agent** を選択し、🔧 **Tools** で "Azure MCP Server" のツールを有効化
+2. Copilot Chat → Agent を選択し、🔧 **Tools** で "Azure MCP Server" のツールを有効化
    ![Azure MCP Server 有効化](../images/azuremcpactivate.png)
 
 3. チャットに以下のプロンプトを入力：
@@ -159,7 +200,6 @@ MCP（Model Context Protocol）は、**AIと外部システム（API/DB/ファ�
 - 既存VNet統合は不要
 - 冪等性を保つ設計
 - 説明コメントも含める
-
 ```
 
 ### :robot: 出力例
@@ -167,233 +207,37 @@ MCP（Model Context Protocol）は、**AIと外部システム（API/DB/ファ�
 Azure MCP Serverが最新のAPI仕様を取得し、以下のようなBicepテンプレートを生成：
 
 ```bicep
-// ============================================================================
-// Storage Account Bicep Template
-// ============================================================================
-// このテンプレートは、Azure Storage Accountを作成します。
-// 最新のAPI Version: 2025-01-01を使用しています。
-//
-// 主な機能:
-// - Standard_LRS SKUによるローカル冗長ストレージ
-// - HTTPS通信の強制
-// - TLS 1.2以上の要求
-// - 階層型名前空間(HNS)の有効化オプション
-// - パブリックアクセスの制御
-// - 冪等性の保証（既存リソースがあっても安全にデプロイ可能）
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// パラメータ定義
-// ----------------------------------------------------------------------------
-
-@description('Storage Accountの名前（グローバルに一意である必要があります）')
+@description('Storage Accountの名前')
 @minLength(3)
 @maxLength(24)
 param storageAccountName string
 
-@description('Storage Accountをデプロイするリージョン')
+@description('リージョン')
 param location string = resourceGroup().location
 
-@description('Storage AccountのSKU（Standard_LRS: ローカル冗長ストレージ）')
-@allowed([
-  'Standard_LRS'
-  'Standard_GRS'
-  'Standard_RAGRS'
-  'Standard_ZRS'
-  'Premium_LRS'
-  'Premium_ZRS'
-  'Standard_GZRS'
-  'Standard_RAGZRS'
-])
-param skuName string = 'Standard_LRS'
-
-@description('Storage Accountの種類')
-@allowed([
-  'Storage'
-  'StorageV2'
-  'BlobStorage'
-  'FileStorage'
-  'BlockBlobStorage'
-])
-param kind string = 'StorageV2'
-
-@description('アクセス層（Hot: 頻繁なアクセス、Cool: 低頻度アクセス）')
-@allowed([
-  'Hot'
-  'Cool'
-])
-param accessTier string = 'Hot'
-
-@description('階層型名前空間の有効化（Data Lake Storage Gen2機能）')
-param enableHierarchicalNamespace bool = false
-
-@description('パブリックネットワークアクセスの許可設定')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param publicNetworkAccess string = 'Enabled'
-
-@description('Blob のパブリックアクセスを許可するかどうか')
-param allowBlobPublicAccess bool = false
-
-@description('共有キーアクセスを許可するかどうか（false推奨：Managed Identity使用）')
-param allowSharedKeyAccess bool = true
-
-@description('最小TLSバージョン')
-@allowed([
-  'TLS1_0'
-  'TLS1_1'
-  'TLS1_2'
-  'TLS1_3'
-])
-param minimumTlsVersion string = 'TLS1_2'
-
-@description('HTTPSトラフィックのみを許可するかどうか')
-param supportsHttpsTrafficOnly bool = true
-
-@description('リソースタグ')
-param tags object = {
-  Environment: 'Production'
-  ManagedBy: 'Bicep'
-  CreatedDate: '2025-10-01'
-}
-
-// ----------------------------------------------------------------------------
-// 変数定義
-// ----------------------------------------------------------------------------
-
-// ネットワークルールのデフォルト設定
-var networkAcls = {
-  bypass: 'AzureServices'
-  defaultAction: publicNetworkAccess == 'Disabled' ? 'Deny' : 'Allow'
-  ipRules: []
-  virtualNetworkRules: []
-}
-
-// ----------------------------------------------------------------------------
-// リソース定義
-// ----------------------------------------------------------------------------
-
-@description('Azure Storage Account')
+@description('Storage Account')
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: storageAccountName
   location: location
-  tags: tags
-
-  // SKU設定（冗長性レベル）
   sku: {
-    name: skuName
+    name: 'Standard_LRS'
   }
-
-  // Storage Accountの種類
-  kind: kind
-
-  // プロパティ設定
+  kind: 'StorageV2'
   properties: {
-    // アクセス層の設定（BlobStorageまたはStorageV2の場合に有効）
-    accessTier: accessTier
-
-    // HTTPSトラフィックのみを許可
-    supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
-
-    // 最小TLSバージョンの設定
-    minimumTlsVersion: minimumTlsVersion
-
-    // 階層型名前空間の有効化（Data Lake Storage Gen2）
-    isHnsEnabled: enableHierarchicalNamespace
-
-    // パブリックネットワークアクセスの制御
-    publicNetworkAccess: publicNetworkAccess
-
-    // Blobのパブリックアクセス制御
-    allowBlobPublicAccess: allowBlobPublicAccess
-
-    // 共有キーアクセスの制御（Managed Identity推奨）
-    allowSharedKeyAccess: allowSharedKeyAccess
-
-    // クロステナントレプリケーションの制御（セキュリティ強化）
-    allowCrossTenantReplication: false
-
-    // デフォルト認証をOAuthに設定（セキュリティ強化）
-    defaultToOAuthAuthentication: true
-
-    // ネットワークACLの設定
-    networkAcls: networkAcls
-
-    // 暗号化設定（デフォルトでMicrosoft管理キーを使用）
-    encryption: {
-      services: {
-        blob: {
-          enabled: true
-          keyType: 'Account'
-        }
-        file: {
-          enabled: true
-          keyType: 'Account'
-        }
-        table: {
-          enabled: true
-          keyType: 'Account'
-        }
-        queue: {
-          enabled: true
-          keyType: 'Account'
-        }
-      }
-      keySource: 'Microsoft.Storage'
-      requireInfrastructureEncryption: false
-    }
+    supportsHttpsTrafficOnly: true
+    minimumTlsVersion: 'TLS1_2'
+    allowBlobPublicAccess: false
   }
 }
 
-// ----------------------------------------------------------------------------
-// 出力
-// ----------------------------------------------------------------------------
-
-@description('作成されたStorage AccountのリソースID')
 output storageAccountId string = storageAccount.id
-
-@description('作成されたStorage Accountの名前')
-output storageAccountName string = storageAccount.name
-
-@description('Blob Serviceのプライマリエンドポイント')
 output blobEndpoint string = storageAccount.properties.primaryEndpoints.blob
-
-@description('File Serviceのプライマリエンドポイント')
-output fileEndpoint string = storageAccount.properties.primaryEndpoints.file
-
-@description('Queue Serviceのプライマリエンドポイント')
-output queueEndpoint string = storageAccount.properties.primaryEndpoints.queue
-
-@description('Table Serviceのプライマリエンドポイント')
-output tableEndpoint string = storageAccount.properties.primaryEndpoints.table
-
-@description('Storage Accountのプライマリロケーション')
-output primaryLocation string = storageAccount.properties.primaryLocation
-
 ```
 
-**操作：**
-1. 提案されたBicepテンプレートを確認
-2. 必要に応じて「セキュリティをより強化して」等の追加指示
-3. Agent modeが自動的に `#editFiles` ツールでファイル作成
-
-### 💡 その他の活用例
-
-**APIバージョン確認：**
+**その他の活用例:**
 ```text
-#bicepschema
-Microsoft.KeyVault/vaults の最新 apiVersion を教えて
+#bicepschema Microsoft.KeyVault/vaults の最新 apiVersion を教えて
 ```
-
-**スキーマ情報取得：**
-```text
-#bicepschema
-Microsoft.KeyVault/vaults のスキーマ情報を教えて
-```
-
-> **補足：** Azure MCP Serverには Azure CLI 実行ツールも含まれており、既存リソースの状態確認や前提調査も会話で実行できます。
 
 ---
 

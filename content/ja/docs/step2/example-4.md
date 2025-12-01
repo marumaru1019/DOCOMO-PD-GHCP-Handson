@@ -1,215 +1,86 @@
 ---
-title: ④ Copilot のカスタマイズ
+title: ④ カスタマイズ
 categories: [GitHub Copilot, Agent Mode]
 weight: 4
 ---
 
-## 1. Copilot のカスタマイズ方法は？
-VS Code の GitHub Copilot は、**カスタム指示**や**プロンプトファイル**を使用してAIの応答をプロジェクトの要件に合わせてカスタマイズできます。毎回同じコンテキストを入力する代わりに、ファイルに保存して自動的にすべてのチャットリクエストに含めることが可能です。
+## 1. カスタマイズとは？
 
-> **ポイント**
->
-> * **カスタム指示** … コーディング規約や技術スタックに関する共通ガイドライン（**どのように**作業を行うか）
-> * **プロンプトファイル** … 特定タスク用の再利用可能なプロンプト（**何を**行うか）
-> * **自動適用** … ワークスペース全体またはファイル固有の自動適用
-> * **チーム共有** … バージョン管理でチーム全体の標準化
+GitHub Copilot は、プロジェクトやチームの要件に合わせてカスタマイズできます。毎回同じコンテキストや指示を入力する代わりに、ファイルに保存して自動的に適用したり、再利用可能なプロンプトとして管理できます。
 
 ---
 
-## 2. カスタマイズの種類と使い分け
+## 2. カスタマイズの種類
 
-VS Code では以下の3つの方法でCopilotをカスタマイズできます：
+VS Code では以下の4つの方法でCopilotをカスタマイズできます：
 
-| 種類 | 用途 | ファイル形式 | 適用範囲 | 使い分けのポイント |
-|------|------|-------------|----------|-------------------|
-| **`.github/copilot-instructions.md`** | 全般的なコーディング規約 | Markdown | ワークスペース全体 | • プロジェクト全体の基本ルール<br>• すべてのチャットに自動適用<br>• チーム共有が容易 |
-| **`.instructions.md`** | タスク・技術固有の指示 | Markdown | globパターンで指定 | • 特定ファイルタイプや領域の詳細ルール<br>• 条件付き自動適用<br>• 複数ファイルで分割管理 |
-| **`.prompt.md`** | 再利用可能なプロンプト | Markdown | 手動実行 | • 複雑なタスクの標準化<br>• 変数を使った柔軟な実行<br>• 頻繁に行う作業の効率化 |
-
-### 使い分けの指針
-
-**📝 基本ルール → `.github/copilot-instructions.md`**
-- プロジェクト全体で統一したいコーディング規約
-- 技術スタックの指定（React, TypeScript等）
-- 基本的なファイル構成やネーミング規則
-
-**🎯 専門領域 → `.instructions.md`**
-- フロントエンド/バックエンド固有のルール
-- テスト専用の指示
-- 特定のファイルパターンにのみ適用したい詳細ルール
-
-**🚀 作業効率化 → `.prompt.md`**
-- コンポーネント生成、API作成などの定型作業
-- コードレビュー、セキュリティチェックなどの検査作業
-- 複数のパラメータが必要な複雑なタスク
+| 種類 | 用途 | ファイル形式 | 適用タイミング |
+|------|------|-------------|----------------|
+| **カスタムインストラクション**<br>（`.github/copilot-instructions.md`） | プロジェクト全体の<br>コーディング規約 | Markdown | すべてのチャットに<br>自動適用 |
+| **パス別インストラクション**<br>（`.instructions.md`） | 特定領域の<br>詳細なルール | Markdown<br>（Front Matter付き） | 条件に一致する<br>ファイル編集時 |
+| **Promptsファイル**<br>（`.prompt.md`） | 再利用可能な<br>開発タスク | Markdown<br>（Front Matter付き） | 手動実行時<br>（`/プロンプト名`） |
+| **カスタムエージェント**<br>（`.agent.md`） | 特定の役割や<br>タスクに特化した環境 | Markdown<br>（Front Matter付き） | エージェント選択時 |
 
 ---
 
-## 3. カスタム指示（Custom Instructions）
+## 3. 使い分けの指針
 
-### 3.1 カスタム指示の作成方法
+次のフローチャートを参考に、最適なカスタマイズ方法を選択してください。
 
-**手順：**
-![ツールの選択方法](../images/custom-instructions-activate.png)
+```mermaid
+flowchart TD
+    Start([カスタマイズが必要？]) --> Q1{常に適用したい<br>ルール・規約？}
+    Q1 -->|はい| Q2{適用範囲は？}
+    Q1 -->|いいえ| Q3{繰り返し実行する<br>タスク？}
+
+    Q2 -->|プロジェクト全体| CI1[カスタムインストラクション<br>copilot-instructions.md]
+    Q2 -->|特定の言語/領域| CI2[パス別インストラクション<br>.instructions.md]
+
+    Q3 -->|はい| Q4{特定の役割として<br>常時利用？}
+    Q3 -->|いいえ| Normal[通常のチャット]
+
+    Q4 -->|はい| Mode[カスタムエージェント<br>役割特化環境]
+    Q4 -->|いいえ| Prompt[Promptsファイル<br>必要な時に実行]
+
+    style CI1 fill:#e1f5e1
+    style CI2 fill:#e1f5e1
+    style Prompt fill:#fff4e1
+    style Mode fill:#e1f0ff
+    style Normal fill:#f0f0f0
+```
+
+## 4. カスタマイズの使い方
+
+### 4.1 カスタムインストラクション（`.github/copilot-instructions.md`）
+
+**作成方法:**
 1. `github.copilot.chat.codeGeneration.useInstructionFiles` 設定を `true` に設定
 2. ワークスペースルートに `.github` フォルダを作成（存在しない場合）
 3. `.github/copilot-instructions.md` ファイルを作成
 4. Markdown形式で指示内容を記述
 
-### 3.2 ファイル構造
-
-#### `.github/copilot-instructions.md`
+**ファイル構造:**
 ```
 プロジェクトルート/
 ├── .github/
-│   └── copilot-instructions.md  # 📝 全般的なコーディング規約
+│   └── copilot-instructions.md
 └── ...
 ```
 
-**ファイル内容の構造：**
-- **ヘッダー（必須）**: なし（Front Matter不要）
-- **本文**: Markdown形式で自然言語による指示
-- **フォーマット**: 見出し、リスト、コードブロックが利用可能
-- **適用範囲**: ワークスペース全体に自動適用
-
-### 3.3 カスタム指示に含めるべき項目
-
-効果的なカスタム指示を作成するために、以下の項目を含めることを推奨します：
-
-#### :memo: 必須項目チェックリスト
-
-* **プロジェクトの概要** … 何を作っていて誰向けか（数行のエレベーターピッチ）
-* **技術スタックとバージョン** … 使用言語/フレームワーク/主要ライブラリ、ビルド/実行方法、対象のLTSなど
-* **コーディング規約** … 命名規則、型付け方針、エラーハンドリング、ログ方針、フォーマッタ/リンタなど
-* **テスト方針** … 採用フレームワーク、モックの流儀、カバレッジ目安、テストデータの置き場所
-* **ディレクトリ構成の要点** … どこに何があるか（src/、apps/、packages/などの役割）
-* **コミット/PRの書式** … コミットメッセージやPRのテンプレ（例：Conventional Commitsを使う等）
-* **セキュリティ/禁止事項** … シークレット生成禁止、外部通信のルール、ライセンスや依存更新の方針
-* **よく使うスクリプト/リソース** … `npm run test`、`make db`、社内ガイド/設計書/APIスキーマへのリンク
-
-### 3.4 導入方法と具体例
-
-#### 基本的なカスタム指示ファイル例
-
-カスタム指示ファイル（`.github/copilot-instructions.md`）を作成して、プロジェクト全体のコーディング規約を設定します。
-
+**例:**
 ```markdown
-# Project Overview
-ECサイトのフロントエンド。顧客が商品を閲覧・購入できるSPA。
+# Coding Guidelines
 
-## Tech Stack
-- Frontend: React 18 + Vite + TypeScript 5（ES2022）
-- State: Redux Toolkit、非同期はRTK Query
-- Styling: Tailwind CSS + HeadlessUI
-- Testing: Vitest + React Testing Library
-- Tools: ESLint、Prettier、Husky + lint-staged
-
-## Coding Guidelines
-- すべて **TypeScript**。any禁止（必要時は `unknown`→狭義化）
-- React は **関数コンポーネント + hooks**を使用
-- **早期return**を好む。null/undefinedを明示的に扱う
-- エラーハンドリングは戻り値でエラー表現（`Result<T, E>`型）を優先
-- ログは `console.warn/error` のみ使用
-
-## Project Structure
-- `src/components`: 再利用可能UIコンポーネント
-- `src/features`: 機能別のページとロジック
-- `src/lib`: ユーティリティとAPI設定
-- 新規機能は **features フォルダ**で機能単位に実装
-
-## Build / Run / Test
-- 開発: `npm run dev`
-- テスト: `npm run test`（モックは `src/__mocks__` を利用）
-- ビルド: `npm run build`
-
-## Commit / PR
-- コミットは **Conventional Commits**（例: `feat: add product search`）
-- PR説明には「目的・変更点・テスト観点」を箇条書きで記載
-
-## Security / Do & Don't
-- APIキーやシークレットを生成/貼付しない
-- 依存更新は `npm audit` でセキュリティチェック後に実施
-- 外部APIの呼び出しは必ず環境変数経由
+## 必須ルール
+- すべてのファイルの冒頭に `// Created by GitHub Copilot` を記述する
+- コメントは日本語で記述する
 ```
 
-#### より詳細な実践例（JavaScript/Node.js向け）
-
-```markdown
-# Project Overview
-社内のタスク管理システム。チームメンバーがプロジェクトの進捗を共有・管理するWebアプリケーション。
-
-## Tech Stack
-- Backend: Node.js 20 + Express.js
-- Database: MongoDB + Mongoose
-- Frontend: Vanilla JavaScript（ES2022）+ Vite
-- Testing: Jest + Supertest（API）
-- Tools: ESLint、Prettier
-
-## Coding Guidelines
-- **JavaScript**のみ使用（TypeScriptは使わない）
-- ES2022の機能を活用（async/await、Optional chaining等）
-- 関数は **アロー関数** を優先
-- エラーハンドリングは **try-catch** で統一
-- APIレスポンスは必ず `{ success: boolean, data?: any, error?: string }` 形式
-
-## File Structure
-- `src/routes`: Express.jsのルート定義
-- `src/models`: Mongooseのスキーマ定義
-- `src/middleware`: 認証・バリデーション等の共通処理
-- `public`: 静的ファイル（HTML、CSS、クライアントJS）
-
-## API Design
-- RESTful API設計に従う
-- エンドポイントは複数形（`/api/tasks`、`/api/users`）
-- HTTPステータスコードを適切に使用（200、201、400、404、500）
-- バリデーションエラーは詳細なメッセージを返す
-
-## Testing
-- 単体テスト: Jestでビジネスロジックをテスト
-- 統合テスト: Supertestでエンドポイントをテスト
-- テストデータは `tests/fixtures` に配置
-- モックは `__mocks__` ディレクトリを使用
-
-## Environment & Scripts
-- 開発: `npm run dev`（nodemonで自動リロード）
-- テスト: `npm test`（Jest + Supertest）
-- 本番: `npm start`
-- DB初期化: `npm run seed`
-
-## Security
-- 認証はJWT Token方式
-- パスワードはbcryptでハッシュ化
-- 環境変数は `.env` ファイルで管理（`.env.example` でテンプレート提供）
-- SQLインジェクション対策としてMongooseのvalidationを活用
-```
-
-ファイルを保存すると、以降のすべてのチャットでこれらの指示が自動的に適用されます。
-
-> **💡 Tips: カスタム指示の自動生成**
->
-> VS Code の新機能として、**`チャット: ワークスペース指示ファイルを生成する`** コマンドが利用できます。このコマンドは、既存のコードベースを分析して、プロジェクトに最適化されたカスタム指示を自動生成します。
->
-> **使用方法:**
-> - **コマンドパレット**から `チャット: ワークスペース指示ファイルを生成する` を実行
-> ![Instructionsの作成](../images/generate-custom.png)
-> - または **チャットビュー**の「歯車アイコン」→「指示の生成」を実行
-> ![Instructionsの作成2](../images/generate-custom2.png)
->
-> **機能:**
-> - プロジェクトの構造、技術スタック、コーディングパターンを分析
-> - `.github/copilot-instructions.md` ファイルを自動作成
-> - 既存の指示ファイルがある場合は改善提案を生成
->
-> 生成された指示は、チームの特定のニーズに合わせてカスタマイズできます。
-
-> **⚠️ 注意点:** **instructions はチャット/レビュー/エージェント等で使われますが、"エディタ内のインライン補完"には直接効きません**
 ---
 
-## 4. Instructionsファイル（`.instructions.md`）
+### 4.2 パス別インストラクション（`.instructions.md`）
 
-### 4.1 作成方法
-
-**手順：**
+**作成方法:**
 1. **コマンドパレット**から `チャット: 手順の構成` を実行
 ![Instructionsの作成](../images/instruction-create.png)
 1. または **チャットビュー**の「歯車アイコン」→「指示」→「新しい命令ファイル」
@@ -219,80 +90,51 @@ ECサイトのフロントエンド。顧客が商品を閲覧・購入できる
    - **User profile**: ユーザープロファイル（複数ワークスペース共通）
 2. ファイル名を入力（例：`typescript.instructions.md`）
 
-### 4.2 ファイル構造
-
-#### ディレクトリ構造
+**ファイル構造:**
 ```
 プロジェクトルート/
 ├── .github/
-│   ├── copilot-instructions.md     # 📝 全般指示
+│   ├── copilot-instructions.md
 │   └── instructions/
-│       ├── backend.instructions.md  # 📝 バックエンド専用
-│       ├── frontend.instructions.md # 📝 フロントエンド専用
-│       └── testing.instructions.md  # 📝 テスト専用
+│       ├── backend.instructions.md
+│       ├── frontend.instructions.md
+│       └── testing.instructions.md
 └── ...
 ```
 
-#### ファイル内容の構造
-```markdown
----
-description: "TypeScript専用のコーディング指示"
-applyTo: "**/*.ts,**/*.tsx"
----
-
-# TypeScript専用指示
-
-## 型定義
-- 厳密な型定義を使用してください
-- any型の使用を禁止します
-
-## コーディングスタイル
-- セミコロンを必須とします
-```
-
-**構造要素：**
-- **Front Matter**（任意）:
-  - `description`: 指示ファイルの説明
-  - `applyTo`: 自動適用するファイルのglobパターン
-- **本文**: Markdown形式の指示内容
-
-### 4.2 Front Matter の設定項目
+**Front Matter の設定:**
 
 | 項目 | 説明 | 例 |
 |------|------|-----|
-| `description` | 指示ファイルの説明文 | `"TypeScript専用のコーディング指示"` |
-| `applyTo` | 自動適用するファイルのglobパターン | `"**/*.ts,**/*.tsx"` |
+| `description` | 指示ファイルの説明文 | `"テスト作成時の指示"` |
+| `applyTo` | 自動適用するファイルのglobパターン | `"**/*.test.ts,**/*.spec.ts"` |
 
-### 4.3 導入方法
-
-技術領域に特化したinstructionsファイルを作成します。
-
-**テスト専用指示ファイル（`testing.instructions.md`）:**
+**例:**
 ```markdown
 ---
-description: "テスト作成時の指示"
+description: "テストファイルのルール"
 applyTo: "**/*.test.ts,**/*.spec.ts"
 ---
 
-# テスト作成指示
+# テストファイルのルール
 
-## テストライブラリ
-- Jest と React Testing Library を使用
-
-## テスト内容
-- 正常系と異常系の両方をテスト
-- ユーザーの操作に基づいたテストを優先
+- テストファイルの冒頭に `// Test file` のコメントを追加する
+- すべてのテストケースに日本語の説明を含める
 ```
 
 このファイルを保存すると、テストファイル（`.test.ts`、`.spec.ts`）を編集する際に自動的に適用されます。
 
 ---
 
-## 5. Promptsファイル（`.prompt.md`）
+### 4.3 Promptsファイル（`.prompt.md`）
 
-### 5.1 作成方法
+**使う場面:**
+- コンポーネント生成などの定型作業を効率化したい
+- コードレビューやセキュリティチェックを標準化したい
+- 複雑なプロンプトを再利用したい
+- パラメータ（変数）を使って柔軟に実行したい
 
-**手順：**
+**作成方法:**
 1. **コマンドパレット**から `チャット: プロンプトファイルの構成` を実行
 ![Promptsの作成](../images/prompt-create.png)
 2. または **チャットビュー**の「歯車アイコン」→「プロンプト」→「新しいプロンプトファイル」
@@ -302,178 +144,264 @@ applyTo: "**/*.test.ts,**/*.spec.ts"
    - **User profile**: ユーザープロファイル（複数ワークスペース共通）
 4. ファイル名を入力（例：`refactor-typescript.prompt.md`）
 
-### 5.2 ファイル構造
-
-#### ディレクトリ構造
+**ファイル構造:**
 ```
 プロジェクトルート/
 ├── .github/
 │   └── prompts/
-│       ├── refactor-typescript.prompt.md    # 📝 TypeScriptリファクタリング用
-│       ├── api-review.prompt.md             # 📝 API レビュー用
-│       └── security-check.prompt.md         # 📝 セキュリティチェック用
+│       ├── refactor-typescript.prompt.md
+│       ├── code-review.prompt.md
+│       └── security-check.prompt.md
 └── ...
 ```
 
-#### ファイル内容の構造
-```markdown
----
-mode: agent
-model: Claude Sonnet 4
-description: "TypeScriptファイルリファクタリングプロンプト"
-tools: ["editFiles", "problems", "codebase", "usages"]
----
-
-# TypeScript ファイルのリファクタリング
-
-${file} ファイルをリファクタリングしてください。
-
-## リファクタリング観点
-- 型安全性の向上
-- パフォーマンスの最適化
-- 可読性・保守性の改善
-- DRY原則の適用
-```
-
-**構造要素：**
-- **Front Matter**（任意）:
-  - `mode`: チャットモード（`ask`, `edit`, `agent`）
-  - `model`: 使用するAIモデル
-  - `description`: プロンプトの説明
-  - `tools`: エージェントモードで使用可能なツール
-- **本文**: プロンプト内容（変数、他ファイル参照可能）
-
-### 5.2 Front Matter の設定項目
+**Front Matter の設定:**
 
 | 項目 | 説明 | 例 |
 |------|------|-----|
 | `mode` | チャットモード | `"agent"`, `"ask"`, `"edit"` |
-| `model` | 使用するAIモデル | `"GPT-4.1"`, `"Claude Sonnet 4"` |
-| `description` | プロンプトの説明文 | `"TypeScriptファイルリファクタリングプロンプト"` |
-| `tools` | 使用可能なツール・ツールセット | `["editFiles", "problems"]` |
+| `model` | 使用するAIモデル | `"Claude Sonnet 4.5"` |
+| `description` | プロンプトの説明文 | `"TypeScriptリファクタリング"` |
+| `tools` | 使用可能なツール | `["editFiles", "problems"]` |
 
-### 5.3 導入方法
+**例:**
+````markdown
+---
+mode: agent
+model: Claude Sonnet 4.5
+description: "ファイルにヘッダーコメントを追加"
+tools: ["editFiles"]
+---
 
-TypeScriptファイルのリファクタリング用プロンプトファイルを作成します。
+# ファイルヘッダー追加
 
-**リファクタリング用プロンプト（`refactor-typescript.prompt.md`）:**
+開いているファイルの先頭に以下の形式のヘッダーコメントを追加してください：
+
+```
+// ========================================
+// File: [ファイル名]
+// Created: [今日の日付]
+// ========================================
+```
+````
+
+**プロンプトファイルの呼び出し方法:**
+
+**方法1:** コマンドパレット → `チャット: プロンプトを実行`
+
+**方法2:** チャット入力欄で `/` に続けてプロンプトファイル名を入力
+```
+/プロンプト名
+```
+
+---
+
+### 4.4 カスタムエージェント（`.agent.md`）
+
+> **⚠️ VS Code 1.106以降の機能**
+>
+> カスタムエージェントはVS Code 1.106以降で利用可能です。以前のバージョンでは「カスタムチャットモード」という名称で、ファイル拡張子は `.chatmode.md`、フォルダは `.github/chatmodes/` でした。VS Codeは既存の `.chatmode.md` ファイルも引き続き認識しますが、新規作成時は新しい形式（`.agent.md`、`.github/agents/`）を使用することを推奨します。
+
+**使う場面:**
+- 計画立案、レビュー、デバッグなど特定タスクに特化したい
+- 使用できるツールを制限したい（安全性向上）
+- タスクごとに異なるモデルを使いたい
+- 素早くエージェントを切り替えたい
+- エージェント間のワークフロー（handoffs）を構築したい
+
+**作成方法:**
+1. **コマンドパレット** → `Chat: New Custom Agent`
+![チャットモードの作成](../images/chat-create.png)
+1. **保存場所を選択**:
+   - **Workspace**: `.github/agents/` フォルダ（チーム共有）
+   - **User Profile**: 個人設定（複数ワークスペースで使用）
+2. **エージェント名を入力** （エージェントドロップダウンに表示される名前）
+3. **ファイル内容を編集** （Front Matter + 指示内容）
+
+**ファイル構造:**
+```
+プロジェクトルート/
+├── .github/
+│   └── agents/
+│       ├── plan.agent.md
+│       ├── review.agent.md
+│       └── debug.agent.md
+└── ...
+```
+
+**Front Matter の設定:**
+
+| 項目 | 説明 | 例 |
+|------|------|-----|
+| `description` | エージェントの説明文 | `"実装計画を生成するエージェント"` |
+| `name` | エージェント名（未指定時はファイル名） | `"Planner"` |
+| `tools` | 使用可能なツール・ツールセット | `['codebase', 'search', 'usages']` |
+| `model` | 使用するAIモデル | `Claude Sonnet 4.5` |
+| `handoffs` | 他エージェントへの遷移ボタン定義 | 下記参照 |
+
+**例（コメント追加エージェント）:**
+```markdown
+---
+description: "コードに日本語コメントを追加"
+name: "Comment Writer"
+tools: ['codebase', 'editFiles']
+model: "Claude Sonnet 4.5"
+---
+
+# コメント追加エージェント
+
+あなたはコードに日本語コメントを追加する専門家です。
+
+## ルール
+- すべての関数に「この関数は〇〇を行う」という形式のコメントを追加
+- 複雑なロジックには行内コメントで説明を追加
+- コメントは必ず日本語で記述
+```
+
+**Handoffs（エージェント間ワークフロー遷移）:**
+
+Handoffsを使用すると、エージェント間でシームレスにワークフローを繋げることができます。チャット応答の後にボタンが表示され、クリックすると次のエージェントに遷移します。
+
+```markdown
+---
+description: "実装計画を生成"
+tools: ['search', 'fetch']
+handoffs:
+  - label: "実装を開始"
+    agent: implementation
+    prompt: "上記の計画に基づいて実装を開始してください。"
+    send: false
+---
+```
+
+| handoffs項目 | 説明 |
+|--------------|------|
+| `label` | ボタンに表示するテキスト |
+| `agent` | 遷移先のエージェント識別子 |
+| `prompt` | 遷移先に送信するプロンプト |
+| `send` | `true`で自動送信、`false`で入力欄に表示 |
+
+**カスタムエージェントの管理:**
+
+**チャットビューから:**
+1. **チャットビュー** → **設定ボタン** → **Agents**
+2. **既存エージェントを選択** して編集
+3. **アクション**: コピー・移動・名前変更・削除
+
+**コマンドパレットから:**
+- `Configure Custom Agents` → エージェント選択 → 編集
+
+---
+
+## 5. :memo: 練習問題
+
+以下の課題に取り組んで、カスタマイズの理解を深めましょう。
+
+### 練習1: カスタムインストラクションの作成
+
+`.github/copilot-instructions.md` を作成し、以下のルールを記述してください：
+
+**内容:**
+```markdown
+# Coding Rules
+- すべてのファイルの冒頭に「Created by GitHub Copilot」を記述
+- 変数名は日本語のコメントで説明を追加
+```
+
+**確認方法:**
+1. ファイルを保存
+2. 新しいファイルを作成し、Copilot に「新しい関数を作成して」と依頼
+3. ファイル冒頭にコメントが追加されることを確認
+
+### 練習2: Promptsファイルの作成
+
+`.github/prompts/add-header.prompt.md` を作成してください：
+
+**内容:**
 ```markdown
 ---
 mode: agent
-model: GPT-4.1
-description: "TypeScriptファイルリファクタリングプロンプト"
-tools: ["editFiles", "problems", "codebase"]
+description: "ファイルヘッダー追加"
+tools: ["editFiles"]
 ---
 
-# TypeScript ファイルのリファクタリング
-
-${file} ファイルをリファクタリングしてください。
-
-## リファクタリング観点
-- 型安全性の向上
-- パフォーマンスの最適化
-- 可読性・保守性の改善
-- DRY原則の適用
-
-## 具体的な改善項目
-1. any型の除去
-2. useCallback/useMemo の適用
-3. 重複コードの共通化
-4. エラーハンドリングの強化
+開いているファイルの先頭に「Created: [今日の日付]」コメントを追加してください。
 ```
 
-### 5.4 プロンプトファイルの呼び出し方法
+**確認方法:**
+1. 任意のファイルを開く
+2. チャットで `/add-header` を実行
+3. ファイル先頭にコメントが追加されることを確認
 
-作成したプロンプトファイルを実行するには、以下の3つの方法があります：
+### 練習3: カスタムエージェントの作成
 
-#### 方法1: コマンドパレットから実行
-1. **コマンドパレット**（⇧⌘P / Ctrl+Shift+P）を開く
-2. `チャット: プロンプトを実行` コマンドを選択
-3. クイックピックからプロンプトファイルを選択
+コマンドパレットから `Chat: New Custom Agent` を実行し、以下の内容で作成してください：
 
-#### 方法2: チャットビューで直接実行
-チャット入力欄で `/` に続けてプロンプトファイル名を入力：
+**内容:**
+```markdown
+---
+description: "説明追加エージェント"
+tools: ['codebase', 'editFiles']
+---
 
+# 説明追加エージェント
+
+すべての回答に「📝 説明：」という接頭辞を付けて、簡潔に説明してください。
 ```
-/refactor-typescript
-```
 
-**ファイルを指定してリファクタリング実行：**
-```
-/refactor-typescript #file:src/components/TodoApp.tsx
-```
-
-#### 方法3: エディタの再生ボタンから実行
-1. プロンプトファイルをエディタで開く
-2. エディタタイトルエリアの**再生ボタン**をクリック
-3. 現在のチャットセッションまたは新しいチャットセッションを選択
-![エディタの再生ボタン](../images/editor-play-button.png)
-
-> **💡 Tips**: エディタから実行する方法は、プロンプトファイルのテストや反復改善に特に便利です。
+**確認方法:**
+1. エージェントを「説明追加エージェント」に切り替え
+2. 「このプロジェクトについて教えて」と質問
+3. 回答に「📝 説明：」が付くことを確認
 
 ---
 
-## 6. 実践的な使用パターン
+## 6. よくある質問
 
-### 6.1 チーム標準の共有
+### Q1: どれから始めればいい？
 
-**推奨ディレクトリ構造:**
-```
-.github/
-├── copilot-instructions.md           # 📝 全般的なコーディング規約
-├── instructions/
-│   ├── backend.instructions.md       # 📝 バックエンド専用指示
-│   ├── frontend.instructions.md      # 📝 フロントエンド専用指示
-│   ├── testing.instructions.md       # 📝 テスト専用指示
-│   └── database.instructions.md      # 📝 データベース専用指示
-└── prompts/
-    ├── refactor-typescript.prompt.md    # 📝 TypeScriptリファクタリング用
-    ├── create-component.prompt.md       # 📝 コンポーネント作成用
-    ├── code-review.prompt.md            # 📝 コードレビュー用
-    └── security-check.prompt.md         # 📝 セキュリティチェック用
-```
+**A:** まずは**カスタムインストラクション**から始めましょう。プロジェクト全体の基本ルールを設定するだけで、すぐに効果が実感できます。
 
-### 6.2 段階的導入のベストプラクティス
+### Q2: ツールの優先順位は？
 
-**フェーズ1**: 基本的なカスタム指示
-1. `.github/copilot-instructions.md` で基本ルールを設定
-2. プロジェクト全体に適用される最低限の規約を記述
+**A:** ツール指定の優先順位は以下の通りです：
+1. **Promptsファイル** の `tools` 指定（最優先）
+2. **カスタムエージェント** の `tools` 指定
+3. 既定のツールセット
 
-**フェーズ2**: 専門分野別の指示
-1. `frontend.instructions.md`, `backend.instructions.md` を作成
-2. 技術領域ごとの詳細な指示を分割
+### Q3: チームで共有するには？
 
-**フェーズ3**: タスク別プロンプト
-1. 頻繁に行うタスク用の `.prompt.md` ファイルを作成
-2. チーム内で共通化できるプロンプトを蓄積
+**A:** `.github/copilot-instructions.md` をバージョン管理に含めることで、チーム全体で共有できます。パス別インストラクション、Prompts、カスタムエージェントも同様にGitで管理可能です。
 
-### :memo: 練習
+### Q4: ワークスペースとユーザープロファイルの違いは？
 
-1. **基本設定**: `.github/copilot-instructions.md` を作成し、基本的なコーディング規約を設定してください
+**A:**
+- **ワークスペース**: プロジェクト固有の設定。`.github/copilot-instructions.md` はワークスペース専用です。
+- **ユーザープロファイル**: 個人設定として複数ワークスペースで使用。パス別インストラクション、Prompts、カスタムエージェントはどちらにも保存可能です。
 
-2. **専門指示**: `.instructions.md` ファイルを作成してください
-   - テスト用
-   - 使用している技術スタック用
 
-3. **再利用プロンプト**: `.prompt.md` ファイルを作成してください
-   - TypeScriptリファクタリング用
-
-4. **動作確認**: 作成したファイルが正しく機能することを確認してください
 
 ---
 
-## 7. まとめ
+## まとめ
 
-Copilotカスタマイゼーションの3つのアプローチ：
+GitHub Copilot のカスタマイズは4つの方法があり、それぞれ異なる用途に最適化されています：
 
-| ファイルタイプ | 用途 | 作成方法 | 実践ポイント |
-|---------------|------|----------|-------------|
-| **`.github/copilot-instructions.md`** | 全般的なコーディング規約 | 手動作成またはワークスペース生成 | • プロジェクト全体の基本ルール<br>• 自動適用<br>• チーム共有しやすい |
-| **`.instructions.md`** | タスク・技術固有の指示 | コマンドパレットまたはチャットUI | • globパターンで自動適用<br>• 複数ファイルで分割管理<br>• ワークスペース/ユーザー別 |
-| **`.prompt.md`** | 再利用可能なプロンプト | コマンドパレットまたはチャットUI | • 変数使用可能<br>• 手動実行<br>• 複雑なタスクの標準化 |
+| 方法 | 主な用途 | 適用タイミング |
+|------|----------|----------------|
+| **カスタムインストラクション** | プロジェクト全体のルール | 常時自動適用 |
+| **パス別インストラクション** | 特定領域の詳細ルール | 条件付き自動適用（globパターン） |
+| **Promptsファイル** | 再利用可能な開発タスク | 手動実行（`/プロンプト名`） |
+| **カスタムエージェント** | 役割・タスク特化の環境 | エージェント選択時 |
+
+**使い分けの核心:**
+- **カスタムインストラクション**: 常に守るべき「プロジェクト全体のルール・規約」
+- **パス別インストラクション**: 特定ファイルにのみ適用する「詳細ルール」
+- **Promptsファイル**: 必要な時に使う「単発タスク」（ツール指定は**最優先**）
+- **カスタムエージェント**: 役割を固定する「ペルソナ・ワークフロー」
 
 **成功のポイント:**
-- **段階的導入**: 基本→専門→タスク別の順で導入
-- **チーム標準化**: バージョン管理でファイルを共有
-- **継続的改善**: 使用状況に応じて指示を調整
-- **適切な分割**: 1ファイル1目的で管理しやすく
+- **段階的導入**: カスタムインストラクションから始めて徐々に拡充
+- **適切な使い分け**: フローチャートを参考に最適な方法を選択
+- **ツール優先度の理解**: Prompt file ＞ カスタムエージェント ＞ 既定
+- **チーム標準化**: バージョン管理で共有し、チーム全体で活用
